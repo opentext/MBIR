@@ -1,0 +1,92 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="sample BI application">
+    <meta name="author" content="Open Text">
+
+    <title>example BI application</title>
+
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="css/templatemo-topic-listing.css" rel="stylesheet">
+</head>
+<div class="container">
+    <nav class="navbar navbar-expand-lg" style="background-color: var(--secondary-color)">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi-back"></i>
+                <span>OpenText Magellan BI & Reporting</span>
+            </a>
+
+            <div class="d-lg-none ms-auto me-4" style="display: block !important;">
+                <span>[[${username}]]</span>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a href="/logout" class="navbar-icon bi-box-arrow-right smoothscroll" style="padding-left: 5px; padding-top: 7px;"></a>
+        </div>
+    </nav>
+    <form class="form-signin" th:action="@{/setting}" th:object="${setting}" method="post">
+        <h3 class="form-signin-heading">You can customize the following fields</h3>
+        <p th:if="${param.error}" class="error">Invalid values provided</p>
+        <p th:if="${success}" class="text-bg-success">Saved successfully</p>
+
+        <p>
+            <label for="reportPath" class="sr-only">report file path to render</label>
+            <input type="text" id="reportPath" th:field="*{reportPath}" class="form-control"
+                   placeholder="reportPath" autofocus/>
+        </p>
+        <p>
+            <label for="dashboardPath" class="sr-only">dashboard file path to render</label>
+            <input type="text" id="dashboardPath" th:field="*{dashboardPath}" class="form-control"
+                   placeholder="dashboardPath" autofocus/>
+        </p>
+        <button class="btn btn-primary btn-block" type="submit">Save</button>
+        <a class="btn btn-warning btn-block" href="/setting" style="margin-left: 50px;" type="submit">Cancel</a><br/>
+        <br/><br/>
+
+        <h3>Here are the current application settings</h3>
+        <section>
+            <p class="form-signin-heading">You can update following properties in the application.properties file within the installation or source code,
+                and then restart the application for it to take effect.
+            </p>
+            <p>
+                <label for="devxurl" class="sr-only">devx token service REST URL</label>
+                <input readonly disabled type="text" id="devxurl" th:field="*{devXCloudAPIBaseUrl}" class="form-control"
+                       placeholder="ihub URL" required autofocus/>
+            </p>
+            <p>
+                <label for="tenant" class="sr-only">tenantId</label>
+                <input readonly disabled type="text" id="tenant" th:field="*{tenantId}" class="form-control"
+                       placeholder="tenant id" required autofocus/>
+            </p>
+            <p>
+                <label for="subscription-name" class="sr-only">subscription name</label>
+                <input readonly disabled type="text" id="subscription-name" th:field="*{subscriptionName}" class="form-control"
+                       placeholder="subscription name" autofocus/>
+            </p>
+            <p>
+                <label for="clientId" class="sr-only">OTDS Oauth client id</label>
+                <input readonly disabled type="text" id="clientId" th:field="*{clientId}" class="form-control"
+                       placeholder="clientId" autofocus/>
+            </p>
+            <p>
+                <label for="clientSecret" class="sr-only">OTDS Oauth client secret</label>
+                <input readonly disabled type="text" id="clientSecret" th:field="*{clientSecret}" class="form-control"
+                       placeholder="clientSecret" autofocus/>
+            </p>
+        </section>
+    </form>
+</div>

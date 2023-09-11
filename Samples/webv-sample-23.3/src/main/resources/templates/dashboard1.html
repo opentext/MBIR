@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
+
+<head>
+  <script type="text/javascript" th:src="${bireportingjs_ServiceUrl + '/jsapi'}"></script>
+</head>
+
+<body onload="init( )">
+<div style="height: 100%; width: 100%">
+  <div id="mbir-dashboard-wrapper-example1"></div>
+  <script>
+    function init() {
+      actuate.load("dashboard");
+
+      var iportalurl = "[[${bireportingjs_ServiceUrl}]]";
+      var username = "";
+      var password = null;
+
+      var reqOps = new actuate.RequestOptions( );
+      reqOps.setRepositoryType(actuate.RequestOptions.REPOSITORY_ENCYCLOPEDIA); // ENTERPRISE mode
+      reqOps.setVolumeProfile("enterprise");
+      reqOps.setExternalToken("[[${authToken}]]");
+      if (!actuate.isInitialized()) {
+        actuate.initialize(iportalurl, reqOps, username, password, runDashboard, handleError);
+      } else {
+        actuate.authenticate(iportalurl, reqOps, username, password, null, runDashboard, handleError)
+      }
+
+    }
+
+    function handleError() {
+      console.log("Error: fail to authenticate user");
+    }
+
+    function runDashboard() {
+      var dash = new actuate.Dashboard("mbir-dashboard-wrapper-example1");
+      dash.setDashboardName("[[${dashboardPath}]]");
+
+      var parent = document.getElementById("mbir-dashboard-wrapper-example1").parentNode;
+      var width = parent.parentNode.clientWidth;
+      var height = getHeight(parent.parentNode);
+      dash.setSize("100%", height);
+
+      dash.setIsDesigner(false);
+      dash.submit();
+    }
+
+    // Get's the body's height minus those extra padding/margin/border.
+    function getHeight(parentNode) {
+      var useFullBrowser = true;
+      if (useFullBrowser) {
+        parentNode = document.documentElement;
+      }
+      var style = window.getComputedStyle(parentNode);
+      var height = parentNode.clientHeight;
+      var margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+      var padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      var border = 0; //?
+      var finalHeight = height - margin - padding - border;
+      return finalHeight;
+    }
+  </script>
+</div>
+
+</body>
+
+</html>

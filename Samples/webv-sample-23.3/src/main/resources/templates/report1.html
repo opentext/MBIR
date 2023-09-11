@@ -1,0 +1,35 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Report Page</title>
+    <script type="text/javascript" th:src="${bireportingjs_ServiceUrl + '/jsapi'}"></script>
+    <script type="text/javascript">
+
+        var report = "[[${reportPath}]]";
+        function init( ){
+            actuate.load("viewer");
+            var reqOps = new actuate.RequestOptions( );
+            reqOps.setRepositoryType(actuate.RequestOptions.REPOSITORY_ENCYCLOPEDIA);
+            reqOps.setVolumeProfile("enterprise");
+            reqOps.setExternalToken("[[${authToken}]]");
+            if(actuate.isInitialized()) {
+                actuate.authenticate("[[${bireportingjs_ServiceUrl}]]", reqOps, null, null, runReport)
+            } else {
+                actuate.initialize("[[${bireportingjs_ServiceUrl}]]", reqOps, null, null, runReport);
+            }
+        }
+
+        function runReport(){
+            var config = new actuate.viewer.UIConfig();
+            config.setContentPanel(new actuate.viewer.BrowserPanel());
+            var vwr = new actuate.Viewer("reportpane", config);
+            vwr.setReportName(report);
+            vwr.setSize( "100%", "100%");
+
+            vwr.submit( );
+        }
+    </script>
+</head>
+<body onload="init( )">
+<div id="reportpane"></div>
+</body>
+</html>
