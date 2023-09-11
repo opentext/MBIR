@@ -1,6 +1,6 @@
 # Getting Started
 ### You need following information from your tenant admin to proceed
-* devx cloud API BaseUrl - e.g. https://dev.ca.api.opentext.com
+* developer cloud API BaseUrl - e.g. https://dev.ca.api.opentext.com
 * tenant ID - a UUID that represents the tenant
 * subscription name - MBIR application subscription name
 * client ID - confidential service client ID
@@ -8,7 +8,7 @@
 
 Once you have the above information, please update the corresponding fields in `src/main/resources/application.properties` file.
 
-Please refer to [DevX Registration flow](https://developer.opentext.com/imservices/developertools/developeradmin/documentation/imauthentication/1) page for obtaining the above information.
+Please refer to [Developer Registration flow](https://developer.opentext.com/imservices/developertools/developeradmin/documentation/imauthentication/1) page for obtaining the above information.
 
 ### Prerequisites for building the application
 * JDK 17
