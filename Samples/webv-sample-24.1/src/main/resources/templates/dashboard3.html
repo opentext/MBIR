@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>embedding API report path example</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script type="text/javascript" th:src="${bireportingjs_ServiceUrl + '/jsapi'}"></script>
+</head>
+<body>
+<h2>Embedding API dashboard example with yaml path</h2>
+
+<mbir-dashboard
+        th:url="${bireportingjs_ServiceUrl}"
+        th:authToken="${authToken}"
+        yamlPath="../../yaml/dashboard.yaml"
+        width="1500"
+        height="2000"
+        id="wrapper3">
+</mbir-dashboard>
+
+</body>
+</html>
