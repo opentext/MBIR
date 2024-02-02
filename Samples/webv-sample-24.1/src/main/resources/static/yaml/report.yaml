@@ -1,0 +1,21 @@
+GraphicalMetrics:
+  metadata:
+    name: /Resources/UserData/charts2_demo.rptdesign
+    apiVersion: 1.0.0
+  datasources:
+    - path: UserData/Classic Models.data
+  layout:
+    - row:
+        - type: Area Chart
+          datasetName: Classic Models Data Model
+          binding:
+            x-axis:
+              columnName: City
+            y-axis:
+              series:
+                - columnName: Credit Limit
+                  aggregation: sum
+          chartArea:
+            title:
+              name: Area chart
+

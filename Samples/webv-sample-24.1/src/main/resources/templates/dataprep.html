@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="application/javascript">
+
+<title>Data Provision JSAPI</title>
+	<script type="text/javascript" th:src="${bireportingjs_ServiceUrl + '/jsapi'}"></script>
+<script type="text/javascript">
+
+var dpViewer = null;
+var hideHeader = false;
+var newconfig = null;
+
+function init() {
+	//console.log("JSAPI Version: " + actuate.getVersion());
+	actuate.load("dataprovision.ui");
+    var reqOps = new actuate.RequestOptions( );
+	reqOps.setRepositoryType(actuate.RequestOptions.REPOSITORY_ENCYCLOPEDIA);
+	reqOps.setVolumeProfile("enterprise");
+	reqOps.setExternalToken("[[${authToken}]]");
+    actuate.initialize("[[${bireportingjs_ServiceUrl}]]", reqOps, "", "", initViewer);
+}
+
+function initViewer(option) {
+	
+	newconfig = new actuate.dataprovision.viewer.UIConfig(); 
+	newconfig.setHideHeader(false); 
+	dpViewer = new actuate.dataprovision.Viewer("dpContainer",newconfig);
+	//dpViewer.setDataDesignName("[[${dataDesignFilePath}]]");
+	
+	var options = {
+			 debugWindowType : "CONSOLE", //"CONSOLE", "BROWSER_WINDOW"
+			 logLevel : "FINEST", //  "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST"
+			 enable : true // true, false,
+				
+	};
+	
+	// attempt to register an event handler
+	dpViewer.registerEventHandler(actuate.dataprovision.EventConstants.ON_EXCEPTION, eventHandler)
+	dpViewer.setDebugOptions(options);
+	dpViewer.setWidth(1024);
+	dpViewer.setHeight(768);
+	dpViewer.submit(function() {
+		sendText("Data Provision has been loaded successfully.");
+	});
+}
+
+function sendText(thisText) {
+	var newText = thisText + "<br />";
+	document.getElementById("output").innerHTML += newText; 
+}
+
+function eventHandler(error) {
+	sendText("[Error]: " + error.getType());
+	sendText("[Error]: " + error.getMessage());
+	sendText("[Error]: " + error.getErrCode());
+	sendText("[Error]: " + error.getDescription());
+}
+
+function clearText()
+{
+	document.getElementById("output").innerHTML = "";
+}
+
+function getHideHeader()
+{
+	sendText(newconfig.getHideHeader());
+}
+
+function setSize(){
+
+	var w = document.getElementById("width").value;
+	var h = document.getElementById("height").value;
+	dpViewer.setSize(w, h);
+	dpViewer.submit(function() {
+		sendText("changed size to " +w +" and " + h);
+	});
+}
+
+function onUnload(){
+
+	dpViewer.onUnload();
+	sendText("unloaded");
+}
+
+function reload(){
+
+	initViewer();
+}
+
+function HideHeaderTrue(){
+
+	newconfig.setHideHeader(true); 
+	dpViewer.submit(function() {
+		sendText("Data Provision has update Hide Header successfully.");
+	});
+}
+
+function HideHeaderFlase(){
+
+	newconfig.setHideHeader(false); 
+	dpViewer.submit(function() {
+		sendText("Data Provision has update Hide Header successfully.");
+	});
+}
+
+
+
+</script>
+
+</head>
+
+<body onload="init()">
+	
+	<input type="button" id="HideHeaderTrue" value="HideHeader True" onclick="HideHeaderTrue()"/>
+	<input type="button" id="HideHeaderFlase" value="HideHeader False" onclick="HideHeaderFlase()"/>
+	<input type="button" id="getHideHeader" value="getHideHeader" onclick="getHideHeader();"></input>
+	
+	<input id="width" value="1000" size="3" placeholder="width" type="text">
+	<input id="height" value="700" size="3" placeholder="height" type="text">
+	<input id="setSize" onclick="setSize()" value="Change Size" type="button">
+	
+	<input type="button" id="onUnload" value="onUnload" onclick="onUnload();"></input>
+	<input type="button" id="reload" value="reload" onclick="reload();"></input>
+	
+	<div style="text-align: left; vertical-align: text-top">
+	<div id="dpContainer" style="border: 1px solid; display: inline-block; vertical-align: text-top; width: 1024px; height: 768px;"></div>
+	<div id="output" style="border: 1px solid; display: inline-block; vertical-align: text-top; width: 400px; height: 768px; overflow: auto"></div>
+	<input type="button" value="Clear" onclick="clearText()"/>
+	</div>
+	
+</body></html>
