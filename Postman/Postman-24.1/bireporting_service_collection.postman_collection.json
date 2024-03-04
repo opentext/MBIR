@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "83d1d6d9-2a49-49e7-8be1-7d2391fe588e",
+		"_postman_id": "5a8353a2-eea5-4e58-ba48-2c1c54d53a8a",
 		"name": "Magellan BI and Reporting Collection",
 		"description": "The BI & Reporting REST API accesses and manages dynamic data using BIRT technology and generates new documents for deployment. The REST API can be used to deliver BIRT content and data from BI & Reporting to any mobile or web application.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -1278,771 +1278,533 @@
 		},
 		{
 			"name": "bigdata",
-      "item": [
-        {
-          "name": "Returns metadata of input file using the s3 function",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 200 and metadata of vertica table is returned\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"bucketFolderPath\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"inputFormat\": \"CSV\"\n}",
-              "options": {
-                "raw": {
-                  "headerFamily": "json",
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/inputfile-metadata",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "inputfile-metadata"
-              ]
-            },
-            "description": "Returns metadata of input file such as CSV using the s3 function. If the file(s) contain column names, then the column data type is inferenced from the data.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Import data from input file(s) into a ETL table",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 202 and the ETL imported table jobId is returned\", function () {\r",
-                  "  pm.response.to.have.status(202);\r",
-                  "  pm.expect(jsonData.jobId).to.not.be.empty;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"bucketFolderPath\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"inputFormat\": \"CSV\",\n  \"tableDefinition\": {\n    \"tableName\": \"Nation\",\n    \"columnDefinitions\": [\n        {\n            \"name\": \"N_NAME\",\n            \"dataType\": \"Varchar(256)\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_NATIONKEY\",\n            \"dataType\": \"Integer\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_COMMENT\",\n            \"dataType\": \"Varchar(256)\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_REGIONKEY\",\n            \"dataType\": \"Integer\",\n            \"nullable\": false\n        }\n    ]\n\t},\n  \"useExistingTable\": true\n}",
-              "options": {
-                "raw": {
-                  "headerFamily": "json",
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/tables/import",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "tables",
-                "import"
-              ]
-            },
-            "description": "Creates a table and import data into a ETL table from input file(s) such as CSV using s3 function.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "List tables",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 200 and the ETL table list is returned\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "  pm.expect(jsonData.tables[0].tableId).to.not.be.null;\r",
-                  "  pm.environment.set(\"tmp_bigdata_table_id\",jsonData.tables[0].tableId);\r",
-                  "  pm.environment.set(\"tmp_bigdata_table_owner_id\",jsonData.tables[0].ownerId);\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/tables",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "tables"
-              ]
-            },
-            "description": "List all tables for current logged in user.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Get ETL table properties",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 200 and the ETL table properties are returned\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "  pm.expect(jsonData.tableId).to.not.be.null;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/properties",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "tables",
-                ":tableId",
-                "properties"
-              ],
-              "variable": [
-                {
-                  "key": "tableId",
-                  "value": "{{tmp_bigdata_table_id}}",
-                  "description": "(Required) Table ID"
-                }
-              ]
-            },
-            "description": "Get properties for the specified ETL table.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Assign ETL table privileges",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 201 and ETL table privileges are assigned to user\", function () {\r",
-                  "  pm.response.to.have.status(201);\r",
-                  "  pm.expect(jsonData.tableId).to.not.be.null;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"granteeId\": \"{{tmp_bigdata_table_owner_id}}\",\r\n  \"granteeType\": \"U\",\r\n  \"tablePrivileges\": \"G\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/privileges",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "tables",
-                ":tableId",
-                "privileges"
-              ],
-              "variable": [
-                {
-                  "key": "tableId",
-                  "value": "{{tmp_bigdata_table_id}}",
-                  "description": "(Required) Table ID"
-                }
-              ]
-            },
-            "description": "Assign ETL table privileges to grantee.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Get ETL table privileges",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 200 and ETL table privileges are returned\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "  pm.expect(jsonData.tablePrivileges[0].tableId).to.not.be.null;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/privileges",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "tables",
-                ":tableId",
-                "privileges"
-              ],
-              "query": [
-                {
-                  "key": "granteeId",
-                  "value": "200100000100",
-                  "description": "Grantee ID",
-                  "disabled": true
-                }
-              ],
-              "variable": [
-                {
-                  "key": "tableId",
-                  "value": "{{tmp_bigdata_table_id}}",
-                  "description": "(Required) Table ID"
-                }
-              ]
-            },
-            "description": "Get privileges for the specified ETL table and grantee.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Delete ETL Table",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 204\", function () {\r",
-                  "    pm.response.to.have.status(204);\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "tables",
-                ":tableId"
-              ],
-              "variable": [
-                {
-                  "key": "tableId",
-                  "value": "{{tmp_bigdata_table_id}}",
-                  "description": "(Required) Table ID"
-                }
-              ]
-            },
-            "description": "Delete ETL Table for the specified ETL table id.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Schedules a job to run ETL import job immediately",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 201 and metadata of vertica table is returned\", function () {\r",
-                  "  pm.response.to.have.status(201);\r",
-                  "  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \n  \"jobName\": \"ETL File Upload2\",\n  \n  \"priority\": 500,\n  \n  \"updateMode\": \"R\",\n  \n  \"storageLocation\": \"{{bucket_folder_path}}\",\n  \n  \"accessId\": \"{{access_id}}\",\n  \n  \"accessSecret\": \"{{access_secret}}\",\n  \n  \"fileType\": \"CSV\",\n  \n  \"useExistingTable\": false,\n  \n  \"tableData\": {\n  \n    \"tableName\": \"ETL_TEST\",\n  \n    \"columnDefinitions\": [\n  \n      {\n  \n        \"name\": \"C_PHONE\",\n  \n        \"dataType\": \"Varchar(30)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_CUSTKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_COMMENT\",\n  \n        \"dataType\": \"Varchar(232)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ACCTBAL\",\n  \n        \"dataType\": \"Numeric(9,3)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NAME\",\n  \n        \"dataType\": \"Varchar(36)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_MKTSEGMENT\",\n  \n        \"dataType\": \"Varchar(20)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NATIONKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ADDRESS\",\n  \n        \"dataType\": \"Varchar(80)\",\n  \n        \"nullable\": false\n  \n      }\n  \n    ]\n  \n  }\n  \n}",
-              "options": {
-                "raw": {
-                  "headerFamily": "json",
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/etl/schedule/now",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "etl",
-                "schedule",
-                "now"
-              ]
-            },
-            "description": "Schedules a job to run ETL import job immediately. Returns a job ID number for the newly created schedule.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Schedules a job to run ETL import job once",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 201 and metadata of vertica table is returned\", function () {\r",
-                  "  pm.response.to.have.status(201);\r",
-                  "  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"jobName\": \"ETL File Upload2\",\n  \"priority\": 500,\n  \"updateMode\": \"R\",\n  \"storageLocation\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"fileType\": \"CSV\",\n  \"useExistingTable\": false,\n  \n  \"etlSchedule\": {\n    \"scheduleDate\": \"2024-01-18\",\n    \"timeZoneName\": \"Asia/Calcutta\",\n    \"scheduleTime\": \"13:27:00\"\n  },\n  \"tableData\": {\n    \"tableName\": \"ETL_TEST\",\n    \"columnDefinitions\": [\n      {\n        \"name\": \"C_PHONE\",\n        \"dataType\": \"Varchar(30)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_CUSTKEY\",\n        \"dataType\": \"Integer\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_COMMENT\",\n        \"dataType\": \"Varchar(232)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_ACCTBAL\",\n        \"dataType\": \"Numeric(9,3)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_NAME\",\n        \"dataType\": \"Varchar(36)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_MKTSEGMENT\",\n        \"dataType\": \"Varchar(20)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_NATIONKEY\",\n        \"dataType\": \"Integer\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_ADDRESS\",\n        \"dataType\": \"Varchar(80)\",\n        \"nullable\": false\n      }\n    ]\n  }\n}",
-              "options": {
-                "raw": {
-                  "headerFamily": "json",
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/etl/schedule/once",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "etl",
-                "schedule",
-                "once"
-              ]
-            },
-            "description": "Creates a schedule to run a job at a specific time on a specific date. Returns a job ID number for the new schedule . The type of job the schedule generates depends on the file referenced by the input POST /etl/schedule/once uses the standard header fields, AuthToken, Locale, and TargetVolume.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        },
-        {
-          "name": "Schedules a job to run ETL import job file multiple times",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData=JSON.parse(responseBody);\r",
-                  "\r",
-                  "pm.test(\"Status code is 201 and metadata of vertica table is returned\", function () {\r",
-                  "  pm.response.to.have.status(201);\r",
-                  "  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tmp_tenant_access_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "TargetVolume",
-                "value": "{{tenant_id}}",
-                "type": "text"
-              },
-              {
-                "key": "Locale",
-                "value": "{{locale}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \n  \"jobName\": \"ETL File Upload2\",\n  \n  \"priority\": 500,\n  \n  \"updateMode\": \"R\",\n  \n  \"storageLocation\": \"{{bucket_folder_path}}\",\n  \n  \"accessId\": \"{{access_id}}\",\n  \n  \"accessSecret\": \"{{access_secret}}\",\n  \n  \"fileType\": \"CSV\",\n  \n  \"useExistingTable\": false,\n  \n  \"etlSchedule\": {\n  \n    \"frequency\": \"daily\",\n  \n    \"scheduleDay\": 1,\n  \n    \"scheduleStartDate\": \"2024-01-18\",\n  \n    \"scheduleEndDate\": \"2024-01-18\",\n  \n    \"timeZoneName\": \"Asia/Calcutta\",\n  \n    \"scheduleTime\": \"13:27:00\"\n  \n  },\n  \n  \"tableData\": {\n  \n    \"tableName\": \"ETL_TEST\",\n  \n    \"columnDefinitions\": [\n  \n      {\n  \n        \"name\": \"C_PHONE\",\n  \n        \"dataType\": \"Varchar(30)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_CUSTKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_COMMENT\",\n  \n        \"dataType\": \"Varchar(232)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ACCTBAL\",\n  \n        \"dataType\": \"Numeric(9,3)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NAME\",\n  \n        \"dataType\": \"Varchar(36)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_MKTSEGMENT\",\n  \n        \"dataType\": \"Varchar(20)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NATIONKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ADDRESS\",\n  \n        \"dataType\": \"Varchar(80)\",\n  \n        \"nullable\": false\n  \n      }\n  \n    ]\n  \n  }\n  \n}",
-              "options": {
-                "raw": {
-                  "headerFamily": "json",
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{bireporting_url}}/api/v3/bigdata/etl/schedule/recurring",
-              "host": [
-                "{{bireporting_url}}"
-              ],
-              "path": [
-                "api",
-                "v3",
-                "bigdata",
-                "etl",
-                "schedule",
-                "recurring"
-              ]
-            },
-            "description": "Creates a schedule to run a job recurringly at a specific time in between starting and ending dates. Returns a job ID number for the new schedule POST schedule/recurring uses the standard header fields, AuthToken, Locale, and TargetVolume.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
-          },
-          "response": []
-        }
-
-      ],
+			"item": [
+				{
+					"name": "Returns metadata of input file using the s3 function",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and metadata of vertica table is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bucketFolderPath\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"inputFormat\": \"CSV\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/inputfile-metadata",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"inputfile-metadata"
+							]
+						},
+						"description": "Returns metadata of input file such as CSV using the s3 function. If the file(s) contain column names, then the column data type is inferenced from the data.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Import data from input file(s) into a ETL table",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 202 and the ETL imported table jobId is returned\", function () {\r",
+									"  pm.response.to.have.status(202);\r",
+									"  pm.expect(jsonData.jobId).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bucketFolderPath\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"inputFormat\": \"CSV\",\n  \"tableDefinition\": {\n    \"tableName\": \"Nation\",\n    \"columnDefinitions\": [\n        {\n            \"name\": \"N_NAME\",\n            \"dataType\": \"Varchar(256)\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_NATIONKEY\",\n            \"dataType\": \"Integer\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_COMMENT\",\n            \"dataType\": \"Varchar(256)\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_REGIONKEY\",\n            \"dataType\": \"Integer\",\n            \"nullable\": false\n        }\n    ]\n\t},\n  \"useExistingTable\": true\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/import",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								"import"
+							]
+						},
+						"description": "Creates a table and import data into a ETL table from input file(s) such as CSV using s3 function.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "List tables",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the ETL table list is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tables[0].tableId).to.not.be.null;\r",
+									"  pm.environment.set(\"tmp_bigdata_table_id\",jsonData.tables[0].tableId);\r",
+									"  pm.environment.set(\"tmp_bigdata_table_owner_id\",jsonData.tables[0].ownerId);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables"
+							]
+						},
+						"description": "List all tables for current logged in user.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get ETL table properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the ETL table properties are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/properties",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId",
+								"properties"
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Get properties for the specified ETL table.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Assign ETL table privileges",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201 and ETL table privileges are assigned to user\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"granteeId\": \"{{tmp_bigdata_table_owner_id}}\",\r\n  \"granteeType\": \"U\",\r\n  \"tablePrivileges\": \"G\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/privileges",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId",
+								"privileges"
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Assign ETL table privileges to grantee.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get ETL table privileges",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and ETL table privileges are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tablePrivileges[0].tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/privileges",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId",
+								"privileges"
+							],
+							"query": [
+								{
+									"key": "granteeId",
+									"value": "200100000100",
+									"description": "Grantee ID",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Get privileges for the specified ETL table and grantee.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ETL Table",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId"
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Delete ETL Table for the specified ETL table id.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			],
 			"description": "Big Data API"
 		},
 		{
@@ -2907,6 +2669,88 @@
 				}
 			],
 			"description": "Visuals API"
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Get a list of users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and user list is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.users[0].id).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/users",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"users"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "<string>",
+									"description": "A search string to compare to user names. For example, use the value John* to retrieve all users whose names start with John.",
+									"disabled": true
+								},
+								{
+									"key": "fetchSize",
+									"value": "<string>",
+									"description": "The number of entries to return at one time. This value must be greater than or equal to 5",
+									"disabled": true
+								},
+								{
+									"key": "fetchHandle",
+									"value": "<string>",
+									"description": "Use fetchHandle to iterate through sets of users retrieved by a previous GET /users request. When a GET users request returns more users than the fetch size, the response provides fetchHandle as a unique value. Use fetchHandle to access the next set of users in the user list. The fetchSize parameter determines the maximum number of users in each set.",
+									"disabled": true
+								},
+								{
+									"key": "fetchDirection",
+									"value": "<string>",
+									"description": "The sort direction of the output. True fetches entries in ascending alphabetic order. False fetches entries in descending alphabetic order.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns a list of users including username and user ID\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "version",
