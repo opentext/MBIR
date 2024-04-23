@@ -1,0 +1,70 @@
+
+   
+        <div class="container">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel"
+                             aria-labelledby="design-tab" tabindex="0">
+                            <div class="row wrap">
+                                
+
+                
+                            
+
+                                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 left">
+                                    <div class="card" style="width: 18rem; height: 30rem">
+                                        <div class="card-body">
+                                        <h5 class="card-title">Report Sample</h5>
+                                        <br><br><br>
+                                        <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                            <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-report
+    url=&quot;{{environment.tokenAuthority}}/bireportingjs/iportal/&quot;
+    authToken=&quot;{{authToken}}&quot;
+    path=&quot;report_Path&quot;
+    width=&quot;100%&quot;
+    height=&quot;100%&quot;
+    id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-report&gt;
+                                            </code>
+                                        </pre>
+                                        <br>
+                                        <br>
+                                        <a [routerLink]="" class="stretched-link" (click)="onSelectReport()"></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                                    <div class="card" style="width: 18rem; height: 30rem">
+                                        <div class="card-body">
+                                        <h5 class="card-title">Dashboard Sample</h5>
+                                        <br><br><br>
+                                        <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                            <code style="border-radius: 10px 10px 10px 10px;">
+  &lt;mbir-dashboard
+    url=&quot;{{environment.tokenAuthority}}/bireportingjs/iportal/&quot;
+    authToken=&quot;{{authToken}}&quot;
+    path=&quot;dashboardPath&quot;
+    width=&quot;1500&quot;
+    height=&quot;2000&quot;
+    id=&quot;wrapper3&quot;&gt;
+  &lt;/mbir-dashboard&gt;
+                                            </code>
+                                        </pre>
+                                        <br>
+                                        <br>
+                                        <a [routerLink]="" class="stretched-link" (click)="onSelectDashboard()"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+         
+                    </div>
+                </div>
+            </div>
+        </div>

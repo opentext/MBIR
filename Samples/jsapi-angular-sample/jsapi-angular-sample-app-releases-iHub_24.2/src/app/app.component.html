@@ -1,0 +1,22 @@
+<div class="container-fluid banner">
+  <a class="headerelement" href="#" id="title" >
+    <span id="collapse"><img src="/assets/action_panel32.png" ></span>
+  </a>
+  <img class="headerelement" src="/assets/rect.png" (click)="logout()">
+    <a class="navbar-brand" href="#">Angular Sample App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div *ngIf="isAuthenticated; else noAuth">
+      <div  class="collapse navbar-collapse d-md-flex " id="navbarSupportedContent">
+        
+        <button (click)="logout()" class="btn btn-secondary ml-auto me-md-2" type="submit">Sign Out</button>
+      </div>
+    </div>
+    <ng-template #noAuth>
+      <div  class="collapse navbar-collapse d-md-flex " id="navbarSupportedContent">
+        <button (click)="loginWithPopup()" class="btn btn-secondary ml-auto" type="submit">Sign In</button>
+      </div>
+    </ng-template>
+</div>
+<router-outlet></router-outlet>

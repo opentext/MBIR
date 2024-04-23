@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="sample BI application">
+        <meta name="author" content="Open Text">
+
+        <title>example BI application</title>
+
+        <!-- CSS FILES -->        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+                        
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="css/templatemo-topic-listing.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+        <!-- and it's easy to individually load additional languages -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+
+        <script>hljs.highlightAll();</script>
+    </head>
+    
+    <body id="top">
+
+        <main>
+
+            <nav class="navbar navbar-expand-lg" style="background-color: var(--secondary-color)">
+                <div class="container">
+                    <a class="navbar-brand" href="/">
+                        <i class="bi-back"></i>
+                        <span>OpenText Magellan BI & Reporting</span>
+                    </a>
+
+                    <div class="d-lg-none ms-auto me-4" style="display: block !important;">
+                        <span>[[${username}]]</span>
+                    </div>
+    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <a href="/signout" class="navbar-icon bi-box-arrow-right smoothscroll"></a>
+                </div>
+            </nav>
+
+            <section class="explore-section section-padding" id="section_2">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-12 text-center">
+                            <h3 class="mb-4">JSAPI Sample Application</h3>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab"
+                                        data-bs-target="#design-tab-pane" type="button" role="tab"
+                                        aria-controls="design-tab-pane" aria-selected="true">Reports
+                                </button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="marketing-tab" data-bs-toggle="tab"
+                                        data-bs-target="#marketing-tab-pane" type="button" role="tab"
+                                        aria-controls="marketing-tab-pane" aria-selected="false">Dashboards
+                                </button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="finance-tab" data-bs-toggle="tab"
+                                        data-bs-target="#finance-tab-pane" type="button" role="tab"
+                                        aria-controls="finance-tab-pane" aria-selected="false">Studio
+                                </button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="music-tab" data-bs-toggle="tab"
+                                        data-bs-target="#music-tab-pane" type="button" role="tab"
+                                        aria-controls="music-tab-pane" aria-selected="false">Dashboard Designer
+                                </button>
+                            </li>
+                            
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="education-tab" data-bs-toggle="tab"
+                                        data-bs-target="#education-tab-pane" type="button" role="tab"
+                                        aria-controls="education-tab-pane" aria-selected="false">Data Provisioning
+                                </button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="xtabanalyzer-tab" data-bs-toggle="tab"
+                                        data-bs-target="#xtabanalyzer-tab-pane" type="button" role="tab"
+                                        aria-controls="xtabanalyzer-tab-pane" aria-selected="false">Crosstab Data Analyzer
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-12">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel"
+                                     aria-labelledby="design-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/report1">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Report #1</h5>
+                                                            <p class="mb-0">plain javascript example that consumes JSAPI to render a report. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-design rounded-pill ms-auto">14</span>
+                                                    </div>
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init( ){
+    actuate.load(&quot;viewer&quot;);
+    var reqOps = new actuate.RequestOptions( );
+    ...
+    reqOps.setExternalToken(authToken);
+    actuate.initialize(&quot;.../bireprtingjs/iportal&quot;, reqOps, null, null, runReport);
+}
+function runReport(){
+    var vwr = new actuate.Viewer(&quot;reportpane&quot;);
+    vwr.setReportName("report.rptdesign");
+    vwr.setSize( "100%", "100%")
+    vwr.submit( );
+}
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/report2">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Report #2</h5>
+
+                                                            <p class="mb-0">an example that uses  EmbeddingAPI to render or embed a report through custom mbir-report tag. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-design rounded-pill ms-auto">75</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-report
+  url=&quot;${bireportingjs_ServiceUrl}&quot;
+  authToken=&quot;${authToken}&quot;
+  path=&quot;${reportPath}&quot;
+  width=&quot;100%&quot;
+  height=&quot;100%&quot;
+  id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-report&gt;
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-md-6 col-12">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/report3">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Report #3</h5>
+
+                                                            <p class="mb-0">an example that uses EmbeddingAPI and Declarative BI to create a report for a given yaml file and render it. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-design rounded-pill ms-auto">100</span>
+                                                    </div>
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-report
+  url=&quot;${bireportingjs_ServiceUrl}&quot;
+  authToken=&quot;${authToken}&quot;
+  yamlPath=&quot;../../yaml/report.yaml&quot;
+  width=&quot;100%&quot;
+  height=&quot;100%&quot;
+  id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-report&gt;
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="marketing-tab-pane" role="tabpanel"
+                                     aria-labelledby="marketing-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-3">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/dashboard1">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Dashboard #1</h5>
+
+                                                            <p class="mb-0">plain javascript example that consumes JSAPI to render a dashboard. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-advertising rounded-pill ms-auto">30</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init() {
+  actuate.load(&quot;dashboard&quot;);
+  var reqOps = new actuate.RequestOptions( );
+  ...
+  reqOps.setExternalToken(&quot;[[${authToken}]]&quot;);
+  actuate.initialize(bireportingjsUrl, reqOps, &quot;&quot;, &quot;&quot;, runDashboard);
+
+}
+function runDashboard() {
+  var dash = new actuate.Dashboard(&quot;wrapper-id&quot;);
+  dash.setDashboardName(&quot;${dashboardPath}&quot;);
+  dash.setSize(&quot;1000&quot;, &quot;1000&quot;);
+  dash.setIsDesigner(false);
+  dash.submit();
+}
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-3">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/dashboard2">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Dashboard #2</h5>
+
+                                                            <p class="mb-0">an example that uses  EmbeddingAPI to render or embed a dashboard through custom mbir-dashboard tag. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-advertising rounded-pill ms-auto">65</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-dashboard
+  url=&quot;${bireportingjs_ServiceUrl}&quot;
+  authToken=&quot;${authToken}&quot;
+  path=&quot;${dashboardPath}&quot;
+  width=&quot;1500&quot;
+  height=&quot;2000&quot;
+  id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-dashboard&gt;
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-md-6 col-12">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/dashboard3">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Dashboard #3</h5>
+
+                                                            <p class="mb-0">an example that uses EmbeddingAPI and Declarative BI to create a dashboard for a given yaml file and render it. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-advertising rounded-pill ms-auto">50</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-dashboard
+  url=&quot;${bireportingjs_ServiceUrl}&quot;
+  authToken=&quot;${authToken}&quot;
+  yamlPath=&quot;../../yaml/dashboard.yaml&quot;
+  width=&quot;1500&quot;
+  height=&quot;2000&quot;
+  id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-dashboard&gt;
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="finance-tab-pane" role="tabpanel"
+                                     aria-labelledby="finance-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/studio">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Launch Studio</h5>
+
+                                                            <p class="mb-0">JSAPI example to launch an instance of report studio. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-finance rounded-pill ms-auto">30</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init() {
+   actuate.load(&quot;studio&quot;);
+   const reqOps = new actuate.RequestOptions();
+   ...
+   reqOps.setExternalToken(authToken);
+   actuate.initialize(&quot;bireportingjsUrl&quot;, reqOps, &quot;&quot;, &quot;&quot;, runStudio);
+}
+function runStudio() {
+   var studio = new actuate.Studio(&quot;studio&quot;);
+   studio.submit(submitcallback);
+}
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="music-tab-pane" role="tabpanel"
+                                     aria-labelledby="music-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-7 col-md-6 col-12 mb-4 mb-lg-3">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/dashboard-designer">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Launch Dashboard Designer</h5>
+
+                                                            <p class="mb-0">JSAPI example to launch an instance of dashboard designer. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-music rounded-pill ms-auto">45</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init(authToken) {
+	actuate.load(&quot;dashboard&quot;);
+	var reqOps = new actuate.RequestOptions( );
+	...
+	reqOps.setExternalToken(authToken);
+	actuate.initialize(bireportingjsUrl, reqOps, &quot;&quot;, &quot;&quot;, runDashboard);
+}
+function runDashboard() {
+   var dashboardObject = new actuate.Dashboard(containerid);
+   dashboardObject.setDashboardName(testDashboard);
+   dashboardObject.setIsDesigner(true);
+   dashboardObject.showTabNavigation(true);
+   dashboardObject.downloadDashboard(downloadCallback);
+        }
+var downloadCallback = function (dashDef) {
+    tabs = dashDef.getTabs();
+    activeTab = dashDef.getDefaultActiveTab();
+    addTabsList();
+    dashboardObject.renderContent(dashDef);
+}
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="education-tab-pane" role="tabpanel"
+                                     aria-labelledby="education-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-7 col-md-6 col-12 mb-4 mb-lg-3">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/dataprep">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Launch Data Preparation</h5>
+
+                                                            <p class="mb-0">JSAPI example to launch an instance of data provision/preparation tool. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-education rounded-pill ms-auto">80</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init() {
+	actuate.load(&quot;dataprovision.ui&quot;);
+    var reqOps = new actuate.RequestOptions( );
+	...
+	reqOps.setExternalToken(authToken);
+    actuate.initialize(bireportingjsURL, reqOps, &quot;&quot;, &quot;&quot;, initViewer);
+}
+
+function initViewer(option) {
+	var newconfig = new actuate.dataprovision.viewer.UIConfig();
+	newconfig.setHideHeader(false);
+	var dpViewer = new actuate.dataprovision.Viewer(&quot;dpContainer&quot;,newconfig);
+	dpViewer.setWidth(1024);
+	dpViewer.setHeight(768);
+	dpViewer.submit();
+}
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="xtabanalyzer-tab-pane" role="tabpanel"
+                                     aria-labelledby="xtabanalyzer-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-7 col-md-6 col-12 mb-4 mb-lg-3">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <a target="_blank" href="/load-mbir-jsapi/crosstab">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h5 class="mb-2">Launch Crosstab Data Analyzer</h5>
+
+                                                            <p class="mb-0">JSAPI example to launch an instance of Crosstab Data Analyzer  tool. Below is partial code snippet of the code example, check source code for full details.</p>
+                                                        </div>
+
+                                                        <span class="badge bg-education rounded-pill ms-auto">80</span>
+                                                    </div>
+
+                                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;">
+                                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init() {
+	actuate.load(&quot;xtabAnalyzer&quot;);
+    var reqOps = new actuate.RequestOptions( );
+	...
+	reqOps.setExternalToken(authToken);
+    actuate.initialize(bireportingjsURL, reqOps, &quot;&quot;, &quot;&quot;, initViewer);
+}
+
+function runCrosstab() {
+    var myXtab = new actuate.XTabAnalyzer("xtabpane");
+    myXtab.setDatamartFile('/Resources/UserData/Classic Models.DATA');
+    myXtab.setWidth("100%");
+    myXtab.registerEventHandler(actuate.xtabanalyzer.EventConstants.ON_EXCEPTION, xTabErrorHandle);
+    myXtab.registerEventHandler(actuate.xtabanalyzer.EventConstants.ON_SESSION_TIMEOUT, timeoutHandle);
+
+    myXtab.submit();
+}
+                                                        </code>
+                                                    </pre>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- JAVASCRIPT FILES -->
+        <script src="js/jquery-3.7.0.min.js"></script>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script src="js/jquery.sticky.js"></script>
+        <script src="js/custom.js"></script>
+
+    </body>
+</html>

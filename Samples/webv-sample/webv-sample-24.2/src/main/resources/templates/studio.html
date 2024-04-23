@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <title>Parameter Page</title>
+    <script type="text/javascript" th:src="${bireportingjs_ServiceUrl + '/jsapi'}"></script>
+    <script type="text/javascript">
+
+        var viewer = null;
+        var parameter = null;
+
+        function init() {
+            actuate.load("studio");
+            const reqOps = new actuate.RequestOptions();
+            reqOps.setRepositoryType(actuate.RequestOptions.REPOSITORY_ENCYCLOPEDIA);
+            reqOps.setVolumeProfile("enterprise");
+            actuate.initialize("[[${bireportingjs_ServiceUrl}]]", reqOps, null, null, runReport);
+        }
+
+        var studio = null;
+
+        function runReport() {
+            studio = new actuate.Studio("studio");
+            studio.registerEventHandler(actuate.studio.EventConstants.ON_EXCEPTION,
+                eventHandle);
+            studio.submit(submitcallback);
+        }
+
+        function unload() {
+            studio.unloadDesign();
+        }
+
+        function eventHandle(viewInstance, exception) {
+            console.log(viewInstance);
+            console.log("[Error]: " + exception.getErrorMessage());
+        }
+
+        function submitcallback() {
+            console.log("loaded brs successfully");
+        }
+    </script>
+
+</head>
+<body onload="init( );" onbeforeunload="unload();">
+<div style="text-align: left; vertical-align: text-top">
+    <div id="studio" style="border: 1px solid; display: inline-block; vertical-align: text-top"></div>
+</div>
+</body>
+</html>
