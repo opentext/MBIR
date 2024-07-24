@@ -1,0 +1,3263 @@
+{
+	"info": {
+		"_postman_id": "7d18ff39-07e3-493e-afd2-13f1b5f0aad1",
+		"name": "Magellan BI and Reporting Collection",
+		"description": "The BI & Reporting REST API accesses and manages dynamic data using BIRT technology and generates new documents for deployment. The REST API can be used to deliver BIRT content and data from BI & Reporting to any mobile or web application.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6331445"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"tmp_tenant_apigee_refresh_token\", jsonData.refresh_token);\r",
+									"pm.environment.set(\"tmp_tenant_access_token\", jsonData.access_token);\r",
+									"setTimeout(function(){}, 2000);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{ext_mbir_app_confclient_secret}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{ext_mbir_app_confclient_id}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "default"
+								},
+								{
+									"key": "client_id",
+									"value": "{{ext_mbir_app_confclient_id}}",
+									"type": "default",
+									"disabled": true
+								},
+								{
+									"key": "client_secret",
+									"value": "{{ext_mbir_app_confclient_secret}}",
+									"type": "default",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "{{user_name}}",
+									"type": "default"
+								},
+								{
+									"key": "password",
+									"value": "{{tenant_user_password}}",
+									"type": "default"
+								},
+								{
+									"key": "scope",
+									"value": "openid",
+									"type": "default"
+								},
+								{
+									"key": "response_type",
+									"value": "id_token",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_host}}/tenants/{{tenant_id}}/oauth2/token",
+							"host": [
+								"{{api_host}}"
+							],
+							"path": [
+								"tenants",
+								"{{tenant_id}}",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "DevX Token API"
+		},
+		{
+			"name": "contents",
+			"item": [
+				{
+					"name": "Returns a list of files and folders in the root folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and list of files/folders is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.items[0].id).to.not.be.empty;\r",
+									"  pm.environment.set(\"tmp_user_data_folder_id\", jsonData.items[0].id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/folders/items?search=/Resources/UserData",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								"folders",
+								"items"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "/Resources/UserData",
+									"description": "A search expression that defines a filter pattern for folder/file names. For example, use the value **Sales** to retrieve all folders and files at root level whose names contain **Sales**. Search accepts repository paths as part of the filter condition. For example, `/Resources/*` returns the details for all the subfolders in the Resources folder and `/Resources/data` returns the details for **data** folder only. All special characters included in a file name used in a search expression must be escaped. Special characters used in file paths do not need escaping. For example, a search expression `A/*` returns all occurrences of `A*` in names, and a search for `A*` returns all names starting with `A`."
+								},
+								{
+									"key": "latestVersionOnly",
+									"value": "false",
+									"description": "Specifies whether to search all versions of the file. If True, the search includes only the latest version. The default value is False",
+									"disabled": true
+								},
+								{
+									"key": "isRecursive",
+									"value": "<string>",
+									"description": "Specify True to retrieve files recursively. Supports only RPTDESIGN or DASHBOARD file types. For example, to retrieve recursively all RPTDESIGN files in Applications folder, use `/Applications/*.rptdesign` as a search expression.",
+									"disabled": true
+								},
+								{
+									"key": "fetchSize",
+									"value": "true",
+									"description": "The number of entries to return at one time.",
+									"disabled": true
+								},
+								{
+									"key": "fetchHandle",
+									"value": "1",
+									"description": "Use fetchHandle to iterate through sets of files and folders retrieved by a previous API request. When a API request returns more files and folders than the fetch size, the response provides fetchHandle as a unique number. Use fetchHandle to access the next set of files and folders in the files and folders list. The fetchSize parameter determines the number of files and folders in each set.",
+									"disabled": true
+								},
+								{
+									"key": "fetchDirection",
+									"value": "<string>",
+									"description": "The sort direction of the output. True fetches entries in ascending alphabetic order, with all folders before files. False fetches entries in descending alphabetic order, with all folders after files.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieves the list of files and folders in the root folder of the volume, including their properties.  \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Returns a list of files and folders in the specified folder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/folders/:folderId/items",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								"folders",
+								":folderId",
+								"items"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "<string>",
+									"description": "A search expression that defines a filter pattern for folder/file names. For example, use the value **Sales** to retrieve all folders/files whose names contain **Sales**.  All special characters included in a file name used in a search expression must be escaped. Special characters used in file paths do not need escaping. For example, a search expression `A/*` returns all occurrences of `A*` in names, and a search for `A*` returns all names starting with `A`.",
+									"disabled": true
+								},
+								{
+									"key": "fetchSize",
+									"value": "<string>",
+									"description": "The number of entries to return at one time.",
+									"disabled": true
+								},
+								{
+									"key": "fetchHandle",
+									"value": "<string>",
+									"description": "Use fetchHandle to iterate through sets of files and folders retrieved by a previous API request. When a API request returns more files and folders than the fetch size, the response provides fetchHandle as a unique number. Use fetchHandle to access the next set of files and folders in the files and folders list. The fetchSize parameter determines the number of files and folders in each set.",
+									"disabled": true
+								},
+								{
+									"key": "fetchDirection",
+									"value": "<string>",
+									"description": "The sort direction of the output. True fetches entries in ascending alphabetic order, with all folders before files. False fetches entries in descending alphabetic order, with all folders after files.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "folderId",
+									"value": "{{tmp_user_data_folder_id}}",
+									"description": "(Required) A folder ID number."
+								}
+							]
+						},
+						"description": "Retrieves the list of files and folders in a specified folder of the volume, including their properties.  \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Search for files and folders in a parent folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and list of files in a parent folder is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.items.length).to.be.gt(0)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/folders/:folderId/search/items",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								"folders",
+								":folderId",
+								"search",
+								"items"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "<string>",
+									"description": "A search expression that defines a filter pattern for folder/file names. For example, use the value **Sales** to retrieve all folders/files whose names contain **Sales**.  All special characters included in a file name used in a search expression must be escaped. Special characters used in file paths do not need escaping. For example, a search expression `A/*` returns all occurrences of `A*` in names, and a search for `A*` returns all names starting with `A`.",
+									"disabled": true
+								},
+								{
+									"key": "owner",
+									"value": "<string>",
+									"description": "A search expression that defines a filter pattern for folder/file owner. For example, use the value **MCastillo** to retrieve all files whose owner is the **MCastillo** user. All special characters used in a search expression must be escaped. For example, a search expression `A/*` returns all occurrences of `A*` in names, and a search for `A*` returns all names starting with `A`.",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "<string>",
+									"description": "A search expression that defines a search pattern for folder/file description. All special characters used in a search expression must be escaped.For example, a search expression `A/*` returns all occurrences of `A*` in names, and a search for `A*` returns all names starting with `A`.",
+									"disabled": true
+								},
+								{
+									"key": "fetchSize",
+									"value": "<string>",
+									"description": "The number of entries to return at one time.",
+									"disabled": true
+								},
+								{
+									"key": "fetchHandle",
+									"value": "<string>",
+									"description": "Use fetchHandle to iterate through sets of files and folders retrieved by a previous API request. When a API request returns more files and folders than the fetch size, the response provides fetchHandle as a unique number. Use fetchHandle to access the next set of files and folders in the files and folders list. The fetchSize parameter determines the number of files and folders in each set.",
+									"disabled": true
+								},
+								{
+									"key": "fetchDirection",
+									"value": "<string>",
+									"description": "The sort direction of the output. True fetches entries in ascending alphabetic order, with all folders before files. False fetches entries in descending alphabetic order, with all folders after files.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "folderId",
+									"value": "{{tmp_user_data_folder_id}}",
+									"description": "(Required) A file or folder ID number."
+								}
+							]
+						},
+						"description": "Retrieves the list of files in a specified folder of the volume based on filter expressions on file name, file owner, and file description.  \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Creates a folder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"tmp_new_folder_name\", \"Folder\" + new Date().getTime());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var jsonData=JSON.parse(responseBody);\r",
+									"pm.test(\"Status code is 201 and new folder is created\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"    pm.expect(jsonData.name).to.equal(pm.environment.get('tmp_new_folder_name'));\r",
+									"  pm.environment.set(\"tmp_new_folder_id\", jsonData.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "{{tmp_new_folder_name}}",
+									"description": "(Required) A valid iHub folder name, which becomes the new folder name."
+								},
+								{
+									"key": "parentFolderId",
+									"value": "{{tmp_user_data_folder_id}}",
+									"description": "A parent folder ID number."
+								},
+								{
+									"key": "description",
+									"value": "<string>",
+									"description": "Description",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/folders",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								"folders"
+							]
+						},
+						"description": "Creates a folder at root level or inside a parent folder. To specify the location of the folder in the volume, provide an absolute path in the name parameter, or define an id of a parent folder where the new folder will be created. When an id of the destination folder is provided, you can specify a relative path to this folder in the name. For example, specifying a name=`Sales/Q1` and `id=565000000100` creates a folder Q1 in `/Public/Sales` folder, where `565000000100` is the id for the /Public folder.\n\n This API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Uploads a file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 202 and file upload jobId is returned\", function () {\r",
+									"    pm.response.to.have.status(202);\r",
+									"    pm.expect(jsonData.jobId).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "ClassicModelsPredefinedMeasures.data",
+									"description": "(Required) A valid iHub file name, which becomes the file name on the volume. This file name may include the repository path and the file extension. For example, to upload `Unshipped Orders 1H2013.RPTDESIGN` to the /Public folder, use `/Public/Unshipped Orders 1H2013.RPTDESIGN` for the value of name.",
+									"type": "text"
+								},
+								{
+									"key": "id",
+									"value": "{{tmp_user_data_folder_id}}",
+									"description": "ID of the folder to which the file will be uploaded.",
+									"type": "text"
+								},
+								{
+									"key": "replaceExisting",
+									"value": "true",
+									"description": "Replace existing file of the same name in the volume. The default value is false, which creates a new version of the file and retains the previous version.",
+									"type": "text"
+								},
+								{
+									"key": "fileSource",
+									"value": "<string>",
+									"description": "Specifies the source of file creation. The default value is not set.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file",
+									"description": "File to upload",
+									"type": "file",
+									"src": "BIReportingGoldenCopy/ClassicModelsPredefinedMeasures.data"
+								},
+								{
+									"key": "VersionNumber",
+									"value": "<string>",
+									"description": "File version number",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "MaxVersions",
+									"value": "<string>",
+									"description": "Maximum versions",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/files/upload",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								"files",
+								"upload"
+							]
+						},
+						"description": "Uploads a file at root level or inside a parent folder. To specify the location of the uploaded file in the volume, provide an absolute path in the name parameter, or define an id of a folder to which the file will be uploaded. When an id of the destination folder is provided, you can specify a relative path to this folder in the name. For example, specifying a name=`Sales/MyReport.rptdesign` and `id=800000000000` uploads the file to `Aplications/Sales/MyReport.rptdesign`, where `800000000000` is the id for the `/Applications` folder.\n\n This API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Assigns new privileges to a specific file or folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"pm.test(\"Status code is 200 and the privileges are assigned to a folder\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.item.id).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"permissions\": [\n    {\n      \"name\": \"{{user_name}}\",\n      \"type\": \"user\",\n      \"accessRights\": \"VSRWEDG\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/:fileOrFolderId/privileges",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								":fileOrFolderId",
+								"privileges"
+							],
+							"variable": [
+								{
+									"key": "fileOrFolderId",
+									"value": "{{tmp_new_folder_id}}",
+									"description": "(Required) A file or folder ID number."
+								}
+							]
+						},
+						"description": "Changes file/folder privileges by assigning access rights for users and user groups. The new privileges should be specified in a JSON format, `{\"permissions\": [{\"name\":\"username\",\"type\":\"user\",\"accessRights\":\"VSREWDGA\"},{\"name\":\"groupname\",\"type\":\"userGroup\",\"accessRights\":\"VSREWDGA\"}]}`. The first part of an permission entry is **\"name\"** followed by username, or user group name. In the second part **\"type\"** where you specify the type of the user, that can be `user` or `userGroup`. The third part is **\"accessRights\"**, that include \"VSREWDG\", standing for Visible, Secure Read, Read, Execute, Write, Delete, Grant.\n\n This API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get file or folder privileges",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"pm.test(\"Status code is 200 and the privileges are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.item.id).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/:fileOrFolderId/privileges",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								":fileOrFolderId",
+								"privileges"
+							],
+							"variable": [
+								{
+									"key": "fileOrFolderId",
+									"value": "{{tmp_new_folder_id}}",
+									"description": "(Required) A file or folder ID number."
+								}
+							]
+						},
+						"description": "Retrieves the privileges for the specified file or folder.\n\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get file or folder properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and id field is not empty\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.id).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/:fileOrFolderId/properties",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								":fileOrFolderId",
+								"properties"
+							],
+							"variable": [
+								{
+									"key": "fileOrFolderId",
+									"value": "{{tmp_user_data_folder_id}}",
+									"description": "(Required) A file or folder ID number."
+								}
+							]
+						},
+						"description": "Retrieves the list of properties for the a specified file or folder. \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a file or folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/contents/:fileOrFolderId",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"contents",
+								":fileOrFolderId"
+							],
+							"variable": [
+								{
+									"key": "fileOrFolderId",
+									"value": "{{tmp_new_folder_id}}",
+									"description": "(Required) A file or folder ID number."
+								}
+							]
+						},
+						"description": "Removes a specific file from the iHub volume. \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			],
+			"description": "Files and Folders contents API"
+		},
+		{
+			"name": "headlessbi",
+			"item": [
+				{
+					"name": "Creates visualization for given yaml payload.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the visualization is ready\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.GraphicalMetrics.filename).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/plain"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "GraphicalMetrics:\r\n  metadata:\r\n    name: /Resources/UserData/Charts.rptdesign\r\n    apiVersion: 1.0.0\r\n  datasources:\r\n    - path: UserData/ClassicModelsPredefinedMeasures.data\r\n  layout:\r\n    - row:\r\n      - type: Area Chart\r\n        datasetName: Classic Models Data Model\r\n        binding:\r\n           x-axis:\r\n             columnName: CITY\r\n           y-axis:\r\n             series:\r\n               - columnName: CREDITLIMIT\r\n                 aggregation: sum"
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/headlessbi/visualization",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"headlessbi",
+								"visualization"
+							]
+						},
+						"description": "Creates visualization for given yaml payload.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token), <B>TargetVolume</B> (Tenant ID) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Gets visualization of a given report or dashboard path.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 and visualization of given report is returned\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(pm.response.text()).to.include(\"html\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/headlessbi/visualization?fileName=/Resources/UserData/Charts.rptdesign",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"headlessbi",
+								"visualization"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "/Resources/UserData/Charts.rptdesign",
+									"description": "File name"
+								}
+							]
+						},
+						"description": "Gets visualization of a given report or dashboard path.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token), <B>TargetVolume</B> (Tenant ID) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "HeadlessBI Query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and query payload is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.names.length).to.be.gt(0)\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/plain"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "apiVersion: 1.0.0 \r\ndatasources:\r\n- datamodelName: Classic Models Data Model\r\n  path: UserData/ClassicModelsPredefinedMeasures.data\r\n  version: {{tmp_data_file_version}}\r\ncolumns:\r\n- columnName: COUNTRY\r\n  dataType: string\r\n  displayName: COUNTRY\r\nmeasures:\r\n- aggregation: sum\r\n  columnName: CREDITLIMIT\r\n  dataType: integer\r\noutputFormat: JSON",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/headlessbi/query",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"headlessbi",
+								"query"
+							]
+						},
+						"description": "HeadlessBI Query to visualize the data in flat format such as table using single dimension (columns) for the specified datamart file.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": " Lists the details of specific data model",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the data model details are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.categories.length).to.be.gt(0)\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/headlessbi/datamodel-metadata?datamodelName=Classic Models Data Model&datamodelPath=UserData/ClassicModelsPredefinedMeasures.data&version={{tmp_data_file_version}}",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"headlessbi",
+								"datamodel-metadata"
+							],
+							"query": [
+								{
+									"key": "datamodelName",
+									"value": "Classic Models Data Model",
+									"description": "(Required) Data model name"
+								},
+								{
+									"key": "datamodelPath",
+									"value": "UserData/ClassicModelsPredefinedMeasures.data",
+									"description": "(Required) Data model path"
+								},
+								{
+									"key": "version",
+									"value": "{{tmp_data_file_version}}",
+									"description": "Data model version"
+								}
+							]
+						},
+						"description": "Lists the details of specific data model which include category and measure details such as column names and their data types. Version number of the data object file is also provided.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Lists all data models",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the list of models is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.length).to.be.gt(0)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/headlessbi/datamodels",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"headlessbi",
+								"datamodels"
+							]
+						},
+						"description": "Lists all the data models accessible by the current logged-in user and their data object/design filenames along with file version numbers. For each data model the relative path from Resources folder to the data object is provided.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			],
+			"description": "HeadlessBI API"
+		},
+		{
+			"name": "bigdata",
+			"item": [
+				{
+					"name": "Returns metadata of input file using the s3 function",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and metadata of vertica table is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bucketFolderPath\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"inputFormat\": \"CSV\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/inputfile-metadata",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"inputfile-metadata"
+							]
+						},
+						"description": "Returns metadata of input file such as CSV using the s3 function. If the file(s) contain column names, then the column data type is inferenced from the data.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Import data from input file(s) into a ETL table",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 202 and the ETL imported table jobId is returned\", function () {\r",
+									"  pm.response.to.have.status(202);\r",
+									"  pm.expect(jsonData.jobId).to.not.be.empty;\r",
+									"  setTimeout(function(){}, 8000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bucketFolderPath\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"inputFormat\": \"CSV\",\n  \"tableDefinition\": {\n    \"tableName\": \"Nation\",\n    \"columnDefinitions\": [\n        {\n            \"name\": \"N_NAME\",\n            \"dataType\": \"Varchar(256)\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_NATIONKEY\",\n            \"dataType\": \"Integer\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_COMMENT\",\n            \"dataType\": \"Varchar(256)\",\n            \"nullable\": false\n        },\n        {\n            \"name\": \"N_REGIONKEY\",\n            \"dataType\": \"Integer\",\n            \"nullable\": false\n        }\n    ]\n\t},\n  \"useExistingTable\": false\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/import",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								"import"
+							]
+						},
+						"description": "Creates a table and import data into a ETL table from input file(s) such as CSV using s3 function.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "List tables",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the ETL table list is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tables[0].tableId).to.not.be.null;\r",
+									"  pm.environment.set(\"tmp_bigdata_table_id\",jsonData.tables[0].tableId);\r",
+									"  pm.environment.set(\"tmp_bigdata_table_owner_id\",jsonData.tables[0].ownerId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables"
+							]
+						},
+						"description": "List all tables for current logged in user.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get ETL table properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the ETL table properties are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/properties",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId",
+								"properties"
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Get properties for the specified ETL table.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Assign ETL table privileges",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201 and ETL table privileges are assigned to user\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"granteeId\": \"{{tmp_bigdata_table_owner_id}}\",\r\n  \"granteeType\": \"U\",\r\n  \"tablePrivileges\": \"G\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/privileges",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId",
+								"privileges"
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Assign ETL table privileges to grantee.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get ETL table privileges",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and ETL table privileges are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tablePrivileges[0].tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId/privileges",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId",
+								"privileges"
+							],
+							"query": [
+								{
+									"key": "granteeId",
+									"value": "200100000100",
+									"description": "Grantee ID",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Get privileges for the specified ETL table and grantee.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules ETL import to run immediately",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201 and status message is returned\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n  \"storageLocation\": \"{{bucket_folder_path}}\",\n  \n  \"accessId\": \"{{access_id}}\",\n  \n  \"accessSecret\": \"{{access_secret}}\",\n  \n  \"fileType\": \"CSV\",\n  \n  \"useExistingTable\": false,\n  \n  \"tableData\": {\n  \n    \"tableName\": \"ETL_TEST\",\n  \n    \"columnDefinitions\": [\n  \n      {\n  \n        \"name\": \"C_PHONE\",\n  \n        \"dataType\": \"Varchar(30)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_CUSTKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_COMMENT\",\n  \n        \"dataType\": \"Varchar(232)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ACCTBAL\",\n  \n        \"dataType\": \"Numeric(9,3)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NAME\",\n  \n        \"dataType\": \"Varchar(36)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_MKTSEGMENT\",\n  \n        \"dataType\": \"Varchar(20)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NATIONKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ADDRESS\",\n  \n        \"dataType\": \"Varchar(80)\",\n  \n        \"nullable\": false\n  \n      }\n  \n    ]\n  \n  }\n  \n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/etl/schedule/now",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"etl",
+								"schedule",
+								"now"
+							]
+						},
+						"description": "Schedules run ETL import job immediately. Returns a 201 and status message.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules a job to run ETL import once",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201 and status message is returned\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"storageLocation\": \"{{bucket_folder_path}}\",\n  \"accessId\": \"{{access_id}}\",\n  \"accessSecret\": \"{{access_secret}}\",\n  \"fileType\": \"CSV\",\n  \"useExistingTable\": false,\n  \n  \"etlSchedule\": {\n    \"scheduleDate\": \"2024-01-18\",\n    \"timeZoneName\": \"Asia/Calcutta\",\n    \"scheduleTime\": \"13:27:00\"\n  },\n  \"tableData\": {\n    \"tableName\": \"ETL_TEST\",\n    \"columnDefinitions\": [\n      {\n        \"name\": \"C_PHONE\",\n        \"dataType\": \"Varchar(30)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_CUSTKEY\",\n        \"dataType\": \"Integer\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_COMMENT\",\n        \"dataType\": \"Varchar(232)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_ACCTBAL\",\n        \"dataType\": \"Numeric(9,3)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_NAME\",\n        \"dataType\": \"Varchar(36)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_MKTSEGMENT\",\n        \"dataType\": \"Varchar(20)\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_NATIONKEY\",\n        \"dataType\": \"Integer\",\n        \"nullable\": false\n      },\n      {\n        \"name\": \"C_ADDRESS\",\n        \"dataType\": \"Varchar(80)\",\n        \"nullable\": false\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/etl/schedule/once",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"etl",
+								"schedule",
+								"once"
+							]
+						},
+						"description": "Creates a schedule to run Etl Import at a specific time on a specific date. Returns a message for the new schedule . The type of job the schedule generates depends on the file referenced by the input POST /etl/schedule/once uses the standard header fields, AuthToken, Locale, and TargetVolume.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules a job to run ETL import job multiple times",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201 and status message is returned\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.columnDefinitions[0].name).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n  \"storageLocation\": \"{{bucket_folder_path}}\",\n  \n  \"accessId\": \"{{access_id}}\",\n  \n  \"accessSecret\": \"{{access_secret}}\",\n  \n  \"fileType\": \"CSV\",\n  \n  \"useExistingTable\": false,\n  \n  \"etlSchedule\": {\n  \n    \"frequency\": \"daily\",\n  \n    \"scheduleDay\": 1,\n  \n    \"scheduleStartDate\": \"2024-01-18\",\n  \n    \"scheduleEndDate\": \"2024-01-18\",\n  \n    \"timeZoneName\": \"Asia/Calcutta\",\n  \n    \"scheduleTime\": \"13:27:00\"\n  \n  },\n  \n  \"tableData\": {\n  \n    \"tableName\": \"ETL_TEST\",\n  \n    \"columnDefinitions\": [\n  \n      {\n  \n        \"name\": \"C_PHONE\",\n  \n        \"dataType\": \"Varchar(30)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_CUSTKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_COMMENT\",\n  \n        \"dataType\": \"Varchar(232)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ACCTBAL\",\n  \n        \"dataType\": \"Numeric(9,3)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NAME\",\n  \n        \"dataType\": \"Varchar(36)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_MKTSEGMENT\",\n  \n        \"dataType\": \"Varchar(20)\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_NATIONKEY\",\n  \n        \"dataType\": \"Integer\",\n  \n        \"nullable\": false\n  \n      },\n  \n      {\n  \n        \"name\": \"C_ADDRESS\",\n  \n        \"dataType\": \"Varchar(80)\",\n  \n        \"nullable\": false\n  \n      }\n  \n    ]\n  \n  }\n  \n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/etl/schedule/recurring",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"etl",
+								"schedule",
+								"recurring"
+							]
+						},
+						"description": "Creates a schedule to import Etl table recurringly at a specific time in between starting and ending dates. Returns a message for the new schedule POST schedule/recurring uses the standard header fields, AuthToken, Locale, and TargetVolume.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Csv Loader Events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and status list of all CSV files which are imported into the table specified are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.tablePrivileges[0].tableId).to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:table_name/csvloaderevents",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":table_name",
+								"csvloaderevents"
+							],
+							"query": [
+								{
+									"key": "from_date",
+									"value": "<string>",
+									"description": "Processed CSV file from date and Date input format is YYYY-MM-DD.",
+									"disabled": true
+								},
+								{
+									"key": "to_date",
+									"value": "<string>",
+									"description": "Processed CSV file to date and Date input format is YYYY-MM-DD.",
+									"disabled": true
+								},
+								{
+									"key": "load_status",
+									"value": "<string>",
+									"description": "Processed CSV File Status. Available values : S, E",
+									"disabled": true
+								},
+								{
+									"key": "file_name",
+									"value": "<string>",
+									"description": "particular CSV file name.",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "time_stamp",
+									"description": "List of columns supported for sorting are time_stamp, file_name, rows_loaded, file_size_bytes, retry_attempt, load_status and failure_reason.",
+									"disabled": true
+								},
+								{
+									"key": "sort_order",
+									"value": "desc",
+									"description": "Choose sort order by ascending(asc) or descending(desc). Available values : desc, asc",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "table_name",
+									"value": "{{tmp_bigdata_table_name}}",
+									"description": "(Required) Table Name"
+								}
+							]
+						},
+						"description": "List the status of all CSV files which are imported for the specified ETL table.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ETL Table",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/bigdata/tables/:tableId",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"bigdata",
+								"tables",
+								":tableId"
+							],
+							"variable": [
+								{
+									"key": "tableId",
+									"value": "{{tmp_bigdata_table_id}}",
+									"description": "(Required) Table ID"
+								}
+							]
+						},
+						"description": "Delete ETL Table for the specified ETL table id.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			],
+			"description": "Big Data API"
+		},
+		{
+			"name": "jobs",
+			"item": [
+				{
+					"name": "Lists jobs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and jobs list is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.jobs[0].jobId).to.not.be.empty;\r",
+									"  pm.environment.set(\"tmp_job_id\",jsonData.jobs[0].jobId);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs?fetchDirection=true&type=completed",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "<string>",
+									"description": "A search string to compare to job names.",
+									"disabled": true
+								},
+								{
+									"key": "fetchSize",
+									"value": "<integer>",
+									"description": "The number of entries to return at one time.",
+									"disabled": true
+								},
+								{
+									"key": "fetchHandle",
+									"value": "<string>",
+									"description": "A unique string generated by iHub for every GET request. Use fetchHandle to return the output from a previous request.",
+									"disabled": true
+								},
+								{
+									"key": "fetchDirection",
+									"value": "true"
+								},
+								{
+									"key": "type",
+									"value": "completed"
+								}
+							]
+						},
+						"description": "Returns a list of jobs and their status. Scheduled jobs option returns all scheduled jobs. Completed jobs option returns all pending, running, and completed jobs. The completed job status can be succeeded, failed and canceled. The job information for a completed job includes details such as the output file ID number, that you can use in /contents/folders/items resource requests. \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Execute a report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the report is executed successfully\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.status).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get(\"api_host\") + '/bireporting/api/v3/contents/folders/' + pm.environment.get(\"tmp_user_data_folder_id\") + '/search/items',\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Authorization': 'Bearer ' + pm.environment.get(\"tmp_tenant_access_token\"),\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    console.log(res.json());\r",
+									"   \r",
+									"    var itemList = res.json().items\r",
+									"    for(var i = 0; i < itemList.length; i++)\r",
+									"{\r",
+									"  if(itemList[i].name == 'Charts.rptdesign')\r",
+									"  {\r",
+									"   pm.environment.set(\"tmp_exec_report_id\", itemList[i].id);\r",
+									"  }\r",
+									"}\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "reportId",
+									"value": "7360000001000",
+									"description": "(Required) The file ID of a report design.",
+									"disabled": true
+								},
+								{
+									"key": "requestedOutputFile",
+									"value": "Charts.rptdocument",
+									"description": "Requested output visual document name."
+								},
+								{
+									"key": "paramValues",
+									"value": "<string>",
+									"description": "The parameter values for the job, returned by GET /visuals/{visualId}/parameters. Optional or required, as specified in the report design. You must specify values for all required parameters that do not have a default values. The following example shows **Country** and **City** parameters: `{ \"ParameterValue\" : [\n\n{\"Name\" : \"Country\",\"Value\": \"Japan\"},\n\n{\"Name\" : \"City\",\"Value\": \"Kyoto\"}\n\n]}`.",
+									"disabled": true
+								},
+								{
+									"key": "saveOutputFile",
+									"value": "false",
+									"description": "Save the output visual document. The default value is False."
+								},
+								{
+									"key": "replaceExisting",
+									"value": "true",
+									"description": "Replace existing version of visual document. The default value is False."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs/reports/:reportId/execution",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs",
+								"reports",
+								":reportId",
+								"execution"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "{{tmp_exec_report_id}}"
+								}
+							]
+						},
+						"description": "Runs a report design immediately. By default, the output is a temporary report referenced by an object ID number. Use the object ID and the connection handle to access the temporary file. For example, use JSAPI code similar to the following to view a temporary report document in the BIRT viewer:\n\n `viewer.setReportDocument(<ObjectId>.<OutputFileType>, <connectionHandle>);`\n\n For information on how to use the JSAPI, see the documentation. Report designs often have parameters , that are defined as required. A GET /visuals/{visualId}/parameters request returns parameter definitions and their values.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules a job to run a report immediately",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 202 and the report is scheduled successfully for immediate execution\", function () {\r",
+									"  pm.response.to.have.status(202);\r",
+									"  pm.expect(jsonData.jobId).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "fileType",
+									"value": "RPTDESIGN",
+									"description": "(Required) The file type of the report ID, such as rptdesign or rptdocument."
+								},
+								{
+									"key": "outputFileFormat",
+									"value": "RPTDOCUMENT",
+									"description": "(Required) A valid file format. For a rptdocument output file the supported formats are PDF, XLS, XLSX. For a rptdesign output file, the supported formats are PDF, XLS, XLSX, and RPTDOCUMENT."
+								},
+								{
+									"key": "outputFileName",
+									"value": "/Resources/UserData/Charts.rptdocument",
+									"description": "(Required) A valid MBIR file name, which is assigned to the output file. Do not specify an extension. The value of outputFileFormat defines the file extension."
+								},
+								{
+									"key": "priority",
+									"value": "<string>",
+									"description": "The priority to place on the job, which must be an integer between 0 and 1000, with 0 being the lowest priority. The default value is 500.",
+									"disabled": true
+								},
+								{
+									"key": "paramValues",
+									"value": "<string>",
+									"description": "The values for parameters for the job, returned by GET /visuals/{visualId}/parameters. Optional or required, as specified in the report design. paramValues must include values for any required parameter that does not have a default value. The following example shows Country and City parameters:[{\"name\" : \"Country\",\"value\": \"Japan\"},{\"name\" : \"City\",\"value\": \"Kyoto\"}].",
+									"disabled": true
+								},
+								{
+									"key": "jobName",
+									"value": "<string>",
+									"description": "A name assigned to the job. The name appears in the job queue.",
+									"disabled": true
+								},
+								{
+									"key": "replaceExisting",
+									"value": "true",
+									"description": "Specify False to create a new version of the output document. Specify True to replace an existing version of the output document. The default value is False."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs/schedule/reports/:reportId/immediate-execution",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs",
+								"schedule",
+								"reports",
+								":reportId",
+								"immediate-execution"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "{{tmp_exec_report_id}}"
+								}
+							]
+						},
+						"description": "Schedules a job to run a report immediately and save the output file in the iHub volume. Returns a job ID number for the new schedule. The job type depends on the file referenced by the input. A job that uses a report document file converts the output to another format, such as Adobe PDF or Microsoft Excel. A job that uses a report design generates a file in a standard format such as PDF or Excel, or a rich visualization in rptdocument format. iHub runs the job and saves the output to the volume. The response includes a job ID number that you can use with a GET /jobs/{jobId}/status request to check on the job status and retrieve the file ID of the output file.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules a job to run a report multiple times",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 202 and the report is scheduled successfully for recurrent execution\", function () {\r",
+									"  pm.response.to.have.status(202);\r",
+									"  pm.expect(jsonData.jobId).to.not.be.empty;\r",
+									"  pm.environment.set(\"tmp_delete_job_id\", jsonData.jobId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "fileType",
+									"value": "RPTDESIGN",
+									"description": "(Required) The file type of the report ID, such as rptdesign or rptdocument."
+								},
+								{
+									"key": "frequency",
+									"value": "MONTHLY",
+									"description": "(Required) Frequency of schedule, such as Weekly, Monthly, or Daily."
+								},
+								{
+									"key": "outputFileFormat",
+									"value": "RPTDOCUMENT",
+									"description": "(Required) A valid file format. For a rptdocument output file the supported formats are PDF, XLS, XLSX. For a rptdesign output file, the supported formats are PDF, XLS, XLSX, and RPTDOCUMENT."
+								},
+								{
+									"key": "outputFileName",
+									"value": "/Resources/UserData/Charts_Monthly.rptdocument",
+									"description": "(Required) A valid iHub file name, which is assigned to the output file. Do not specify an extension. The value of outputFileFormat defines the file extension."
+								},
+								{
+									"key": "scheduleTime",
+									"value": "14:45:00",
+									"description": "(Required) The time to run the job on the day specified by scheduleDate in 24-hour or military format hh:mm:ss. Example: 16:45:00."
+								},
+								{
+									"key": "priority",
+									"value": "<string>",
+									"description": "The priority to place on the job, which must be an integer between 0 and 1000, with 0 being the lowest priority. The default value is 500.",
+									"disabled": true
+								},
+								{
+									"key": "paramValues",
+									"value": "<string>",
+									"description": "The values for parameters for the job, returned by GET /visuals/{visualId}/parameters. Optional or required, as specified in the report design. paramValues must include values for any required parameter that does not have a default value. The following example shows Country and City parameters:[{\"name\" : \"Country\",\"value\": \"Japan\"},{\"name\" : \"City\",\"value\": \"Kyoto\"}].",
+									"disabled": true
+								},
+								{
+									"key": "jobName",
+									"value": "<string>",
+									"description": "A name assigned to the job. The name appears in the job queue.",
+									"disabled": true
+								},
+								{
+									"key": "replaceExisting",
+									"value": "true",
+									"description": "Specify False to create a new version of the output document. Specify True to replace an existing version of the output document. The default value is False."
+								},
+								{
+									"key": "scheduleDay",
+									"value": "0",
+									"description": "The day on which to run the job. If the frequency is Daily, do not set a value. If frequency is Weekly, use the first three letters of the English name of the day of the week upon which to run the job, Mon, Tue, and Wed for example. If frequency is Monthly, use any integer between 0 and 31. 0 is the last day of the month."
+								},
+								{
+									"key": "startDate",
+									"value": "2026-11-14",
+									"description": "The date on which to start the schedule in yyyy-mm-dd format. Example: 2016-06-16 The default value is the current date or the next day if scheduleTime has already passed.",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "2032-11-15",
+									"description": "The date on which to end the schedule in yyyy-mm-dd format. Example: 2016-12-31",
+									"disabled": true
+								},
+								{
+									"key": "timeZone",
+									"value": "America/Toronto",
+									"description": "A time zone, such as America/Los_Angeles. The time zone to calculate date stamps and time-based data in a visualization. The default value is the time zone set for the iHub server."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs/schedule/reports/:reportId/recurrent-execution",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs",
+								"schedule",
+								"reports",
+								":reportId",
+								"recurrent-execution"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "{{tmp_exec_report_id}}",
+									"description": "(Required) The file ID of a report design or report document, returned by Files and Folders REST API."
+								}
+							]
+						},
+						"description": "Creates a schedule to run a job at a specific time on a specific date. Returns a job ID number for the new schedule. The type of job the schedule generates depends on the file referenced by the input. A job that uses a report document file converts the output to another format, such as Adobe PDF or Microsoft Excel. A job that uses a report design generates a file in a standard format such as PDF or Excel, or a rich visualization in rptdocument format.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules a job to run a report once",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 202 and the report is scheduled successfully for one time execution\", function () {\r",
+									"  pm.response.to.have.status(202);\r",
+									"  pm.expect(jsonData.jobId).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "fileType",
+									"value": "RPTDESIGN",
+									"description": "(Required) The file type of the report ID, such as rptdesign or rptdocument."
+								},
+								{
+									"key": "outputFileFormat",
+									"value": "RPTDOCUMENT",
+									"description": "(Required) A valid file format. For a rptdocument output file the supported formats are PDF, XLS, XLSX. For a rptdesign output file, the supported formats are PDF, XLS, XLSX, and RPTDOCUMENT."
+								},
+								{
+									"key": "outputFileName",
+									"value": "/Resources/UserData/Charts_OneTime.rptdocument",
+									"description": "(Required) A valid iHub file name, which is assigned to the output file. Do not specify an extension. The value of outputFileFormat defines the file extension."
+								},
+								{
+									"key": "scheduleTime",
+									"value": "17:00:00",
+									"description": "(Required) The time to run the job on the day specified by scheduleDate in 24-hour or military format hh:mm:ss. Example: 16:45:00."
+								},
+								{
+									"key": "priority",
+									"value": "<string>",
+									"description": "The priority to place on the job, which must be an integer between 0 and 1000, with 0 being the lowest priority. The default value is 500.",
+									"disabled": true
+								},
+								{
+									"key": "paramValues",
+									"value": "<string>",
+									"description": "The values for parameters for the job, returned by GET /visuals/{visualId}/parameters. Optional or required, as specified in the report design. paramValues must include values for any required parameter that does not have a default value. The following example shows Country and City parameters:[{\"name\" : \"Country\",\"value\": \"Japan\"},{\"name\" : \"City\",\"value\": \"Kyoto\"}].",
+									"disabled": true
+								},
+								{
+									"key": "jobName",
+									"value": "<string>",
+									"description": "A name assigned to the job. The name appears in the job queue.",
+									"disabled": true
+								},
+								{
+									"key": "replaceExisting",
+									"value": "true",
+									"description": "Specify False to create a new version of the output document. Specify True to replace an existing version of the output document. The default value is False."
+								},
+								{
+									"key": "scheduleDate",
+									"value": "<string>",
+									"description": "The date on which to run the job in yyyy-mm-dd format. Example: 2016-06-16 The default value is the current date or the next day if scheduleTime has already passed.",
+									"disabled": true
+								},
+								{
+									"key": "scheduleTimeZone",
+									"value": "America/Toronto",
+									"description": "A time zone, such as America/Los_Angeles. The time zone to calculate date stamps and time-based data in a visualization. The default value is the time zone set for the iHub server."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs/schedule/reports/:reportId/onetime-execution",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs",
+								"schedule",
+								"reports",
+								":reportId",
+								"onetime-execution"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "{{tmp_exec_report_id}}",
+									"description": "(Required) The file ID of a report design or report document, returned by Files and Folders REST API."
+								}
+							]
+						},
+						"description": "Creates a schedule to run a job at a specific time on a specific date. Returns a job ID number for the new schedule. The type of job the schedule generates depends on the file referenced by the input. A job that uses a report document file converts the output to another format, such as Adobe PDF or Microsoft Excel. A job that uses a report design generates a file in a standard format such as PDF or Excel, or a rich visualization in rptdocument format.\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Get a job status and attributes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and job status and attributes are returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.status).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs/:jobId/status",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs",
+								":jobId",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": "{{tmp_job_id}}",
+									"description": "(Required) A job ID number."
+								}
+							]
+						},
+						"description": "Returns the status of the job or schedule specified with the ID number jobId. The status of a job also returns details such as the output file ID number, usable in files resource requests. Some of the information returned by this request is not available until a job has finished running. \n\r\n\r This API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/jobs/:jobId?type=deleteSchedule",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"jobs",
+								":jobId"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "deleteSchedule",
+									"description": "The target for the delete request, which corresponds to the following input values: \n\n **delete**: Deletes a completed job.  **cancel**: Cancels a job that is pending, or running.  **deleteSchedule**: Deletes a recurring schedule. The default value is cancel."
+								}
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": "{{tmp_delete_job_id}}",
+									"description": "(Required) A current job ID number"
+								}
+							]
+						},
+						"description": "Cancels or deletes a job or schedule. If the job has already run or failed, this request deletes the record of the job. If the job is running or has yet to run, this request cancels the job or schedule. \n\n This API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			],
+			"description": "Jobs API"
+		},
+		{
+			"name": "visuals",
+			"item": [
+				{
+					"name": "Lists the parameters for a report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and the report parameters are listed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.parameterList.length).to.be.eql(0);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "TargetVolume",
+								"value": "{{tenant_id}}",
+								"type": "text"
+							},
+							{
+								"key": "Locale",
+								"value": "{{locale}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/visuals/:visualId/parameters?definitionOnly=false",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"visuals",
+								":visualId",
+								"parameters"
+							],
+							"query": [
+								{
+									"key": "definitionOnly",
+									"value": "false",
+									"description": "Choose **true** to get the parameter definitions only. The default value **false** returns the parameter definitions and their values."
+								}
+							],
+							"variable": [
+								{
+									"key": "visualId",
+									"value": "{{tmp_exec_report_id}}",
+									"description": "(Required) The visual ID of a report design or report document."
+								}
+							]
+						},
+						"description": "Returns a list of parameter definitions and their values from the specified report design or report document file. Parameters filter the output of a report, which can be created by the /jobs/execute and /jobs/schedule resources. For example, if a revenue chart has a parameter for year, setting a value for year restricts the output to data from that year. Parameters are defined in a report design. The following parameter types are available:\n\n **Required**: To run the report, a value must be provided.\n\n **Password**: Hide the value typed by the user.\n\n **Hidden**: Do not display the parameter. Set the value using code.\n\n **Dynamic**: Filters data like a SQL WHERE clause.\n\n **Cascading**: The set of valid values depends on the value of a parent parameter.\n\n The API supports options to retrieve parameter definition and values, and parameter definitions only. \n\n \r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			],
+			"description": "Visuals API"
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Get a list of users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and user list is returned\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.users[0].id).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/users",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"users"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"description": "A search string to compare to user names. For example, use the value John* to retrieve all users whose names start with John.",
+									"disabled": true
+								},
+								{
+									"key": "fetchSize",
+									"value": "5",
+									"description": "The number of entries to return at one time. This value must be greater than or equal to 5",
+									"disabled": true
+								},
+								{
+									"key": "fetchHandle",
+									"value": "",
+									"description": "Use fetchHandle to iterate through sets of users retrieved by a previous GET /users request. When a GET users request returns more users than the fetch size, the response provides fetchHandle as a unique value. Use fetchHandle to access the next set of users in the user list. The fetchSize parameter determines the maximum number of users in each set.",
+									"disabled": true
+								},
+								{
+									"key": "fetchDirection",
+									"value": "false",
+									"description": "The sort direction of the output. True fetches entries in ascending alphabetic order. False fetches entries in descending alphabetic order.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns a list of users including username and user ID\r\n\r\nThis API call uses standard header fields <B>Authorization</B> (Bearer token) and <B>Locale</B>."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "version",
+			"item": [
+				{
+					"name": "Get the REST API version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and Get the REST API version\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.major).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/version",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"version"
+							]
+						},
+						"description": "Retrieves the version of Get the Magellan BI & Reporting."
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Magellan BI & Reporting version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 200 and Get the Magellan BI & Reporting version is returned\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.major).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmp_tenant_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{bireporting_url}}/api/v3/version/product",
+							"host": [
+								"{{bireporting_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"version",
+								"product"
+							]
+						},
+						"description": "Retrieves the version of Magellan BI & Reporting."
+					},
+					"response": []
+				}
+			],
+			"description": "Version API"
+		},
+		{
+			"name": "cleanup",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const envProps = pm.environment.toObject();\r",
+							"console.log(envProps);\r",
+							"for (let prop in envProps) {\r",
+							"    if (prop.startsWith(\"tmp_\")) {\r",
+							"        pm.environment.unset(prop)\r",
+							"    }\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "postman-echo.com/get",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "authToken",
+			"value": ""
+		}
+	]
+}
