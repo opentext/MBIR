@@ -1,0 +1,16 @@
+<input type="button" id="HideHeaderTrue" value="HideHeader True" (click)="mbir.HideHeaderTrue()"/>
+<input type="button" id="HideHeaderFlase" value="HideHeader False" (click)="mbir.HideHeaderFalse()"/>
+<input type="button" id="getHideHeader" value="getHideHeader" (click)="mbir.getHideHeader();"/>
+
+<input id="width" value="1000" size="3" placeholder="width" type="text">
+<input id="height" value="700" size="3" placeholder="height" type="text">
+<input id="setSize" (click)="mbir.setSize()" value="Change Size" type="button">
+
+<input type="button" id="onUnload" value="onUnload" (click)="mbir.onUnload();"/>
+<input type="button" id="reload" value="reload" (click)="mbir.reload();"/>
+
+<div style="text-align: left; vertical-align: text-top">
+<div id="dpContainer" style="border: 1px solid; display: inline-block; vertical-align: text-top; width: 1024px; height: 768px;"></div>
+<div id="output" style="border: 1px solid; display: inline-block; vertical-align: text-top; width: 400px; height: 768px; overflow: auto"></div>
+<input type="button" value="Clear" (click)="mbir.clearText()"/>
+</div>

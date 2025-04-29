@@ -1,0 +1,81 @@
+.banner {
+    height: 64px;
+    width: 100%;
+    background: linear-gradient(
+      56.27deg,
+      #0e122b 13.95%,
+      #0f142f 26.75%,
+      #131939 36.86%,
+      #19224a 46.06%,
+      #222e61 54.65%,
+      #243167 56.44%,
+      #23346a 63.97%,
+      #203e72 69.86%,
+      #1b4f7f 75.2%,
+      #146693 80.2%,
+      #0b84ab 83.33%,
+      #088cb2 86.05%
+    );
+    text-align: left;
+    vertical-align: middle;
+    font-size: 28px;
+    color: white;
+    margin-left: 0;
+    padding-left: 0;
+    padding-top: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#spinner {
+    position: fixed;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+.wrap {
+    padding: 5%;
+    margin-left: 200px;
+    width: 80%;  
+}
+
+.left, .right {
+     display: inline-block;    
+     padding: 2%;   
+}
+.code {
+    text-align: left;
+    font-family: MyFancyCustomFont, monospace;
+  font-size: inherit;
+}
+
+
+
+pre {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    color: #666;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
+}
+
+.card:hover {
+    background-color: #088cb2;
+    cursor: pointer;
+}

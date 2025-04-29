@@ -1,0 +1,334 @@
+
+        <div class="container">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel"
+                             aria-labelledby="design-tab" tabindex="0">
+                            <div class="row wrap">
+
+                              <!-- EmbeddingAPI to render a report through custom mbir-report tag -->
+
+                                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 left">
+                                    <div class="card" style="width: 22rem; height: 45rem">
+                                      <div class="card-body">
+                                        <h5 class="card-title">Report Sample</h5>
+                                        <br>
+                                        <p class ="mb-0">An example that uses  EmbeddingAPI to render or embed a report through custom mbir-report tag. Below is partial code snippet of the code example, check source code for full details.</p>
+                                        <br>
+                                        <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                          <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-report
+    url=&quot;{{environment.tokenAuthority}}/bireportingjs/iportal/&quot;
+    authToken=&quot;your_authToken&quot;
+    path=&quot;report_Path&quot;
+    width=&quot;100%&quot;
+    height=&quot;100%&quot;
+    id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-report&gt;
+                                          </code>
+                                        </pre>
+                                        <br>
+                                        <br>
+                                        <a [routerLink]="" class="stretched-link" (click)="onSelectReport()"></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                              <!-- EmbeddingAPI to render a report through YAML using mbir-report tag -->
+
+                                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 left">
+                                    <div class="card" style="width: 22rem; height: 45rem">
+                                      <div class="card-body">
+                                        <h5 class="card-title">Yaml Report Sample</h5>
+                                        <br>
+                                        <p>An example that uses EmbeddingAPI and Declarative BI to create a report for a given yaml file and render it. Below is partial code snippet of the code example, check source code for full details.</p>
+                                        <br>
+                                        <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                          <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-report
+    url=&quot;{{environment.tokenAuthority}}/bireportingjs/iportal/&quot;
+    authToken=&quot;your_authToken&quot;
+    yamlPath=&quot;/assets/yaml/report.yaml&quot;
+    width=&quot;100%&quot;
+    height=&quot;100%&quot;
+    id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-report&gt;
+                                          </code>
+                                        </pre>
+                                        <br>
+                                        <br>
+                                        <a [routerLink]="" class="stretched-link" (click)="onSelectYamlReport()"></a>
+                                      </div>
+                                    </div>
+                                </div>
+
+                              <!-- Plain javascript example that consume JSAPI to render a report -->
+
+                                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                                  <div class="card" style="width: 22rem; height: 45em">
+                                    <div class="card-body">
+                                      <h5 class="card-title">Plain javascript Report example</h5>
+                                      <br>
+                                      <p class ="mb-0">Plain javascript example that consumes JSAPI to render a report. Below is partial code snippet of the code example, check source code for full details.</p>
+                                      <br><br>
+                                      <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                        <code style="border-radius: 10px 10px 10px 10px;">
+function init( )
+actuate.load(&quot;viewer&quot;);
+var reqOps = new actuate.RequestOptions( );
+...
+reqOps.setExternalToken(authToken);
+actuate.initialize(&quot;.../bireprtingjs/iportal&quot;, reqOps, null, null, runReport);
+
+function runReport()
+  var vwr = new actuate.Viewer(&quot;reportpane&quot;);
+  vwr.setReportName("report.rptdesign");
+  vwr.setSize( "100%", "100%")
+  vwr.submit( );
+
+                                        </code>
+                                      </pre>
+                                      <br>
+                                      <br>
+                                      <a [routerLink]="" class="stretched-link" (click)="onSelectPlainJSReport()"></a>
+                                    </div>
+                                  </div>
+                              </div>
+
+                              <!-- EmbeddingAPI to render a Dashboard Sample mbir-dashboard tag -->
+
+                              <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                                <div class="card" style="width: 22rem; height: 45rem">
+                                  <div class="card-body">
+                                    <h5 class="card-title">Dashboard Sample</h5>
+                                    <br>
+                                    <p>An example that uses  EmbeddingAPI to render or embed a dashboard through custom mbir-dashboard tag. Below is partial code snippet of the code example, check source code for full details.</p>
+                                    <br>
+                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                      <code style="border-radius: 10px 10px 10px 10px;">
+&lt;mbir-dashboard
+url=&quot;{{environment.tokenAuthority}}/bireportingjs/iportal/&quot;
+authToken=&quot;your_authToken&quot;
+path=&quot;dashboardPath&quot;
+width=&quot;1500&quot;
+height=&quot;2000&quot;
+id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-dashboard&gt;
+                                      </code>
+                                    </pre>
+                                    <br>
+                                    <br>
+                                    <a [routerLink]="" class="stretched-link" (click)="onSelectDashboard()"></a>
+                                  </div>
+                                </div>
+                            </div>
+
+                              <!-- EmbeddingAPI to render a dashboard through YAML using mbir-dashboard tag -->
+
+                              <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 left">
+                                <div class="card" style="width: 22rem; height: 45rem">
+                                  <div class="card-body">
+                                    <h5 class="card-title">Yaml Dashboard Sample</h5>
+                                    <br>
+                                    <p>An example that uses EmbeddingAPI and Declarative BI to create a dashboard for a given yaml file and render it. Below is partial code snippet of the code example, check source code for full details.</p>
+                                    <br>
+                                    <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                      <code style="border-radius: 10px 10px 10px 10px;">
+
+&lt;mbir-dashboard
+  url=&quot;{{environment.tokenAuthority}}/bireportingjs/iportal/&quot;
+  authToken=&quot;your_authToken&quot;
+  yamlPath=&quot;/assets/yaml/dashboard.yaml&quot;
+  width=&quot;1500&quot;
+  height=&quot;2000&quot;
+  id=&quot;wrapper3&quot;&gt;
+&lt;/mbir-dashboard&gt;
+
+                                      </code>
+                                    </pre>
+                                    <br>
+                                    <br>
+                                    <a [routerLink]="" class="stretched-link" (click)="onSelectYamlDashboard()"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+          <!-- Plain javascript example that consume JSAPI to render a report -->
+
+                            <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                              <div class="card" style="width: 22rem; height: 45em">
+                                <div class="card-body">
+                                  <h5 class="card-title">Plain javascript Dashboard example</h5>
+                                  <br>
+                                  <p class ="mb-0">Plain javascript example that consumes JSAPI to render a report. Below is partial code snippet of the code example, check source code for full details.</p>
+                                  <br><br>
+                                  <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                    <code style="border-radius: 10px 10px 10px 10px;">
+function init( )
+  actuate.load(&quot;viewer&quot;);
+  var reqOps = new actuate.RequestOptions( );
+  ...
+  reqOps.setExternalToken(authToken);
+  actuate.initialize(&quot;.../bireprtingjs/iportal&quot;, reqOps, null, null, runReport);
+
+function runReport()
+  var vwr = new actuate.Viewer(&quot;reportpane&quot;);
+  vwr.setReportName("report.rptdesign");
+  vwr.setSize( "100%", "100%")
+  vwr.submit( );
+
+                                    </code>
+                                  </pre>
+                                  <br>
+                                  <br>
+                                  <a [routerLink]="" class="stretched-link" (click)="onSelectPlainJSDashboard()"></a>
+                                </div>
+                              </div>
+                            </div>
+
+          <!-- Cross tab example that consume JSAPI to render a report -->
+                            <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                              <div class="card">
+                                <div class="card-body">
+                                  <h5 class="card-title">Cross Tab example</h5>
+                                  <br>
+                                  <p>JSAPI example to launch an instance of data provision/preparation tool. Below is partial code snippet of the code example, check source code for full details.</p>
+                                  <br><br>
+                                  <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                    <code style="border-radius: 10px 10px 10px 10px;">
+function init( )
+  actuate.load(&quot;xtabAnalyzer&quot;);
+  var reqOps = new actuate.RequestOptions( );
+  ...
+  reqOps.setExternalToken(authToken);
+  actuate.initialize(bireportingjsURL, reqOps, &quot;&quot;, &quot;&quot;, initViewer);
+
+function runReport()
+  var myXtab = new actuate.XTabAnalyzer(&quot;xtabpane&quot;);
+  vwr.setReportName("report.rptdesign");
+  myXtab.setWidth("100%");
+  myXtab.registerEventHandler(actuate.xtabanalyzer.EventConstants.ON_EXCEPTION, xTabErrorHandle);
+  myXtab.registerEventHandler(actuate.xtabanalyzer.EventConstants.ON_SESSION_TIMEOUT, timeoutHandle);
+  myXtab.submit();
+
+                                    </code>
+                                  </pre>
+                                  <br>
+                                  <br>
+                                  <a [routerLink]="" class="stretched-link" (click)="onSelectCrosstabAnalyzer()"></a>
+                                </div>
+                              </div>
+                            </div>
+
+                                      <!-- Data Provisioing example that consume JSAPI to render a report -->
+                                      <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                                        <div class="card">
+                                          <div class="card-body">
+                                            <h5 class="card-title">Data Provisioning</h5>
+                                            <br>
+                                            <p>JSAPI example to launch an instance of data provision/preparation tool. Below is partial code snippet of the code example, check source code for full details.</p>
+                                            <br><br>
+                                            <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                              <code style="border-radius: 10px 10px 10px 10px;">
+function init( )
+  actuate.load(&quot;xtabAnalyzer&quot;);
+  var reqOps = new actuate.RequestOptions( );
+  ...
+  reqOps.setExternalToken(authToken);
+  actuate.initialize(bireportingjsURL, reqOps, &quot;&quot;, &quot;&quot;, initViewer);
+
+function runReport()
+  var myXtab = new actuate.XTabAnalyzer(&quot;xtabpane&quot;);
+  vwr.setReportName("report.rptdesign");
+  myXtab.setWidth("100%");
+  myXtab.registerEventHandler(actuate.xtabanalyzer.EventConstants.ON_EXCEPTION, xTabErrorHandle);
+  myXtab.registerEventHandler(actuate.xtabanalyzer.EventConstants.ON_SESSION_TIMEOUT, timeoutHandle);
+  myXtab.submit();
+
+                                              </code>
+                                            </pre>
+                                            <br>
+                                            <br>
+                                            <a [routerLink]="" class="stretched-link" (click)="onSelectDataProvisioing()"></a>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Report Studio example that consume JSAPI to render a report -->
+                                      <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                                        <div class="card">
+                                          <div class="card-body">
+                                            <h5 class="card-title">Report Studio</h5>
+                                            <br>
+                                            <p>JSAPI example to launch an instance of report studio. Below is partial code snippet of the code example, check source code for full details.</p>
+                                            <br><br>
+                                            <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                              <code style="border-radius: 10px 10px 10px 10px;">
+function init()
+   actuate.load(&quot;studio&quot;);
+   const reqOps = new actuate.RequestOptions();
+   ...
+   reqOps.setExternalToken(authToken);
+   actuate.initialize(&quot;bireportingjsUrl&quot;, reqOps, &quot;&quot;, &quot;&quot;, runStudio);
+
+function runStudio()
+   var studio = new actuate.Studio(&quot;studio&quot;);
+   studio.submit(submitcallback);
+
+
+                                              </code>
+                                            </pre>
+                                            <br>
+                                            <br>
+                                            <a [routerLink]="" class="stretched-link" (click)="onSelectReportStudio()"></a>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Dashboard Designer example that consume JSAPI to render a report -->
+                                      <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 right">
+                                        <div class="card" style="margin-left:15em; width: 40rem; height: 50em">
+                                          <div class="card-body">
+                                            <h5 class="card-title">Dashboard Designer</h5>
+                                            <br>
+                                            <p>JSAPI example to launch an instance of dashboard designer. Below is partial code snippet of the code example, check source code for full details.</p>
+                                            <br><br>
+                                            <pre style="overflow: hidden; border-radius: 10px 10px 10px 10px;" class="language-html">
+                                              <code style="border-radius: 10px 10px 10px 10px;">
+function init( )
+  actuate.load(&quot;dashboard&quot;);
+  var reqOps = new actuate.RequestOptions( );
+  ...
+  reqOps.setExternalToken(authToken);
+  actuate.initialize(bireportingjsUrl, reqOps, &quot;&quot;, &quot;&quot;, runDashboard);
+
+function runDashboard()
+  var dashboardObject = new actuate.Dashboard(containerid);
+  dashboardObject.setDashboardName(testDashboard);
+  dashboardObject.setIsDesigner(true);
+  dashboardObject.showTabNavigation(true);
+  dashboardObject.downloadDashboard(downloadCallback);
+
+var downloadCallback = function (dashDef)
+    tabs = dashDef.getTabs();
+    activeTab = dashDef.getDefaultActiveTab();
+    addTabsList();
+    dashboardObject.renderContent(dashDef);
+                                              </code>
+                                            </pre>
+                                            <br>
+                                            <br>
+                                            <a [routerLink]="" class="stretched-link" (click)="onSelectDashboardDesigner()"></a>
+                                          </div>
+                                        </div>
+                                      </div>
+
+
+                          </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,223 @@
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>OpenText Intelligence Dashboard Designer</title>
+
+    <script type="text/javascript" src="../../js/dashboard/config.js"></script>
+    <script defer="defer" type="text/javascript" language="JavaScript">
+
+        var containerid = 'dashboard';
+        var dashboardObject = null;
+
+        var toolbarState = true;
+        var tabNavigationState = true;
+        var designerState = true;
+
+        // dashboardDefinition, tabs and active tab
+        var dashboardDefinition = null;
+        var tabs;
+        var activeTab;
+
+        function runDashboard() {
+            dashboardObject = new actuate.Dashboard(containerid);
+
+            // register the event handler
+            dashboardObject.registerEventHandler(actuate.dashboard.EventConstants.ON_EXCEPTION, errorHandle);
+            dashboardObject.registerEventHandler(actuate.dashboard.EventConstants.ON_SESSION_TIMEOUT, timeoutHandle);
+
+            // Set dashboard dimension
+            dashboardObject.setSize(1024, 768);
+
+            // Set dashboard to be in embedded mode
+            dashboardObject.setIsStandalone(false);
+
+            // set dashboard name
+            dashboardObject.setDashboardName(testDashboard);
+
+            // Use edit mode to show the toolbar menu and toolbar icons
+            dashboardObject.setIsDesigner(true);
+
+            // Show the tab navigation bar
+            dashboardObject.showTabNavigation(true);
+
+            dashboardObject.downloadDashboard(downloadCallback);
+        }
+
+        var downloadCallback = function (dashDef) {
+            dashboardDefinition = dashDef;
+            tabs = dashboardDefinition.getTabs();
+            activeTab = dashboardDefinition.getDefaultActiveTab();
+            addTabsList();
+            dashboardObject.renderContent(dashboardDefinition, function () {
+                sendText("Finished loading dashboard.");
+                sendText("Dashboard filename: " + dashboardObject.getDashboardName());
+            });
+        }
+
+        function timeoutHandle() {
+            sendText("Dashboard has timed-out. Refresh this page to continue.");
+        }
+
+        function errorHandle(exception) {
+            sendText('Error Code: ' + exception.getErrCode());
+            sendText('Error Message: ' + exception.getMessage());
+        }
+
+        function toggleToolbar() {
+            if (toolbarState) {
+                dashboardObject.showToolbar(false);
+                var state = dashboardObject.isToolbarVisible() ? "visible" : "invisible";
+                sendText("Toolbar is curently " + state); // is a bug. See JSAPI-357
+                toolbarState = false;
+            } else {
+                dashboardObject.showToolbar(true);
+                var state = dashboardObject.isToolbarVisible() ? "visible" : "invisible";
+                sendText("Toolbar is curently " + state);
+                toolbarState = true;
+            }
+        }
+
+        function toggleTabNavigation() {
+            if (tabNavigationState) {
+                dashboardObject.showTabNavigation(false);
+                tabNavigationState = false;
+                sendText("Tab navigation is now disabled.")
+            } else {
+                dashboardObject.showTabNavigation(true);
+                tabNavigationState = true;
+                sendText("Tab navigation is now enabled.")
+            }
+
+        }
+
+        function toggleIsDesigner() {
+            // dashboardObject.onUnload();
+            if (designerState) {
+                dashboardObject.setIsDesigner(false);
+                designerState = false;
+            } else {
+                dashboardObject.setIsDesigner(true);
+                designerState = true;
+            }
+
+            dashboardObject.renderContent(dashboardDefinition, function () {
+                sendText("Finished toggling designer state.");
+            });
+        }
+
+        function addTabsList() {
+            var select = document.getElementById("tabs");
+            var tabSize = tabs.length;
+
+            var activeTabIndex;
+
+            for (var i = 0; i < tabSize; i++) {
+                var option = document.createElement('option');
+                option.text = tabs[i].getTitle();
+                option.value = tabs[i].getName();
+                if (option.value === activeTab) {
+                    sendText("Current Selected tab is: " + tabs[i].getTitle());
+                    activeTabIndex = i;
+                }
+                select.add(option, document.getElementById("tabs").length);
+            }
+            document.getElementById("tabs").selectedIndex = activeTabIndex;
+        }
+
+        function setActiveTab() {
+            var activeTab = document.getElementById("tabs");
+            dashboardObject.setActiveTab(activeTab.value);
+
+            var selectedIndex;
+
+            for (var i = 0; i < tabs.length; i++) {
+                if (tabs[i].getName() === activeTab.value)
+                    selectedIndex = i;
+            }
+
+            var compare = (tabs[selectedIndex].getName() === dashboardObject.getActiveTab()) ? "is" : "is not";
+
+            sendText("Name of selected tab " + compare + " the same as current active tab: " + tabs[selectedIndex].getName());
+            sendText("Type of selected tab: " + tabs[selectedIndex].getTabType());
+            sendText("Title of selected tab: " + tabs[selectedIndex].getTitle());
+        }
+
+        function save() {
+            var compare = dashboardObject.isSavingNeeded() ? "was" : "was not";
+            sendText("Saving " + compare + " required.");
+            dashboardObject.save(function () {
+                sendText("Finished saving the dashboard.");
+            }, true)
+        }
+
+        function saveAs() {
+            var newDashboardFilename = document.getElementById("saveAsFilename").value;
+            var replace = document.getElementById("saveAsOverwrite").checked;
+            var overwriteString = replace ? "Finished replacing the latest version of the file: " : "Finished creating a new version of the file: ";
+
+            var compare = dashboardObject.isSavingNeeded() ? "was" : "was not";
+            sendText("Saving " + compare + " required.");
+
+            dashboardObject.saveAs(function () {
+                sendText(overwriteString + newDashboardFilename);
+            }, newDashboardFilename, replace, true)
+        }
+
+        function autoSaveDelay() {
+            var delay = document.getElementById("autoSaveDelay").value;
+            dashboardObject.setAutoSaveDelay(delay);
+            var state = dashboardObject.isAutoSaveEnabled() ? "is" : "is not";
+            sendText("Auto save " + state + " enabled.");
+            sendText("Auto save value: " + delay + " seconds.");
+        }
+
+        function changeAutoSave() {
+            var delay = document.getElementById("autoSaveDelayChange").value;
+            dashboardObject.setAutoSaveDelay(delay);
+            var state = dashboardObject.isAutoSaveEnabled() ? "is" : "is not";
+            sendText("Auto save " + state + " enabled.");
+            sendText("Auto save value: " + delay + " seconds.");
+        }
+
+        function changeDimension() {
+            var width = document.getElementById("width").value;
+            var height = document.getElementById("height").value;
+
+            dashboardObject.setWidth(width);
+            dashboardObject.setHeight(height);
+            dashboardObject.renderContent(dashboardDefinition);
+        }
+
+        function loadComponents() {
+            loadJs("[[${authToken}]]", "[[${dashboardPath}]]", "[[${bireportingjs_ServiceUrl}]]");
+        }
+
+    </script>
+<body onload="loadComponents();">
+
+    <input type="button" id="toggleToolbar" value="Toggle Toolbar" onclick="toggleToolbar();">
+    <input type="button" id="toggleNavigation" value="Toggle Tab Navigation" onclick="toggleTabNavigation();">
+    <input type="button" id="toggleDesigner" value="Toggle Designer" onclick="toggleIsDesigner();">
+    <select id="tabs"></select>
+    <input type="button" id="setActiveTab" value="Change Tab" onclick="setActiveTab();">
+    <input type="button" id="save" value="Save" onclick="save();">
+    <input type="text" id="saveAsFilename" value="/NewDashboard.dashboard" size="25">
+    <input type="button" id="saveAs" value="Save As" onclick="saveAs();">
+    Overwrite? <input type="checkbox" id="saveAsOverwrite">
+    AutoSave Delay <input type="text" id="autoSaveDelay" value="3" size="1">
+    <input type="button" id="autoSaveDelayChange" value="Change AutoSave Delay" onclick="changeAutoSave();">
+    <input type="text" id="width" value="900" size="3">
+    <input type="text" id="height" value="600" size="3">
+    <input type="button" id="changeDimension" value="Change Dimension" onclick="changeDimension();">
+
+    <div style="text-align: left; vertical-align: text-top">
+        <div id="dashboard"
+             style="border:solid 1px; display: inline-block; vertical-align: text-top; width:1024px; height:768px"></div>
+        <div id="output"
+             style="border: 1px solid; display: inline-block; vertical-align: text-top; width: 400px; height: 768px; overflow: auto"></div>
+        <input type="button" value="Clear" onclick="clearText()">
+    </div>
+</body>
+</html>
+

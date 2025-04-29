@@ -1,0 +1,10 @@
+<mbir-report
+  *ngIf="authToken"
+  url="{{environment.iportalUrl}}"
+  authToken="{{ authToken }}"
+  path="{{environment.defaultReportPath}}"
+  width="100%"
+  height="100%"
+  id="wrapper1">
+</mbir-report>
+

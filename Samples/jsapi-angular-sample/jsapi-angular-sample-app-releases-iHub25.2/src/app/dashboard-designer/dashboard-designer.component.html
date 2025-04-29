@@ -1,0 +1,22 @@
+<input type="button" id="toggleToolbar" value="Toggle Toolbar" (click)="mbir.toggleToolbar();">
+<input type="button" id="toggleNavigation" value="Toggle Tab Navigation" (click)="mbir.toggleTabNavigation();">
+<input type="button" id="toggleDesigner" value="Toggle Designer" (click)="mbir.toggleIsDesigner();">
+<select id="tabs"></select>
+<input type="button" id="setActiveTab" value="Change Tab" (click)="mbir.setActiveTab();">
+<input type="button" id="save" value="Save" (click)="mbir.save();">
+<input type="text" id="saveAsFilename" value="/NewDashboard.dashboard" size="25">
+<input type="button" id="saveAs" value="Save As" (click)="mbir.saveAs();">
+Overwrite? <input type="checkbox" id="saveAsOverwrite">
+AutoSave Delay <input type="text" id="autoSaveDelay" value="3" size="1">
+<input type="button" id="autoSaveDelayChange" value="Change AutoSave Delay" (click)="mbir.changeAutoSave();">
+<input type="text" id="width" value="900" size="3">
+<input type="text" id="height" value="600" size="3">
+<input type="button" id="changeDimension" value="Change Dimension" (click)="mbir.changeDimension();">
+
+<div style="text-align: left; vertical-align: text-top">
+    <div id="dashboard"
+         style="border:solid 1px; display: inline-block; vertical-align: text-top; width:1024px; height:768px"></div>
+    <div id="output"
+         style="border: 1px solid; display: inline-block; vertical-align: text-top; width: 400px; height: 768px; overflow: auto"></div>
+    <input type="button" value="Clear" (click)="mbir.clearText()">
+</div>
