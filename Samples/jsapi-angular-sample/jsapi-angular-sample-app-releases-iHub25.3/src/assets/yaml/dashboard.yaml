@@ -1,0 +1,42 @@
+GraphicalMetrics:
+  metadata:
+    name: /Resources/UserData/Dashboard1_mj1.dashboard
+    apiVersion: 1.0.0
+  datasources:
+    - path: UserData/SK/Classic Models.data
+  tabs:
+    - title: yaml title tab 1
+      layoutHeight: 600
+      layout:
+        - column:
+            - row:
+                - column:
+                    - type: Column Chart
+                      container:
+                        title:
+                          name: Column Chart
+                      datasetName: Classic Models Data Model
+                      binding:
+                        x-axis:
+                          columnName: City
+                        y-axis:
+                          series:
+                            - columnName: Credit Limit
+                              aggregation: sum
+                  percent: 60
+                - column:
+                    - type: Line Chart
+                      container:
+                        title:
+                          name: Line Chart
+                      datasetName: Classic Models Data Model
+                      binding:
+                        x-axis:
+                          columnName: Country
+                        y-axis:
+                          series:
+                            - columnName: City
+                              aggregation: count
+                  percent: 40
+              percent: 50
+
